@@ -15,7 +15,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     //User 등록
-    public User sav(AddUserRequest userRequest) {
+    public User save(AddUserRequest userRequest) {
         return userRepository.save(userRequest.toEntity());
     }
 
