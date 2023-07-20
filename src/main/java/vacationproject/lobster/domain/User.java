@@ -16,14 +16,17 @@ public class User {
     @Column(name = "uId")
     private Long id;
 
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "user_name")
     private String userName;
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "password")
-    private String password;
 
     @Column(name = "phone_num")
     private String phoneNum;
@@ -35,12 +38,11 @@ public class User {
     private String profile_img;
 
     @Builder
-    public User(String userName, String email, String password, String phoneNum, String auth) {
+    public User(String userId, String password, String userName, String email, String phoneNum, String auth) {
+        this.userId = userId;
+        this.password = password;
         this.userName = userName;
         this.email = email;
-        this.password = password;
         this.phoneNum = phoneNum;
     }
-
-
 }
