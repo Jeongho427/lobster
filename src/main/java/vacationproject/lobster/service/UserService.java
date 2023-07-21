@@ -8,41 +8,70 @@ import vacationproject.lobster.repository.UserRepository;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    // 회원 가입
+    public void registerMembership(String name, String userId, String email, String password, String phoneNum) {
+
+        User user = new User();
+        user.setUserId(userId); // 변수 이름 변경
+        user.setUserName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setPhoneNum(phoneNum); // 변수 이름 수정
+
+        userRepository.save(user);
+    }
+
+    public String login(String userId, String password) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("해당 사용자 정보가 존재하지 않습니다.");
+        }
+        // 비밀번호 검증 (예시로서 단순히 비밀번호 일치 여부만 확인한다고 가정)
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+        return userId;
+    }
+
+
     //User 등록
-    public User save(AddUserRequest userRequest) {
-        return userRepository.save(userRequest.toEntity());
-    }
+//    public User save(AddUserRequest userRequest) {
+//        return userRepository.save(userRequest.toEntity());
+//    }
 
-    //User 전체 조회
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    //User id로 조회x`x`
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
-    }
-
-    //User 삭제
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    //User 수정
-   /* @Transactional
-    public User update(Long id, UpdatableUserRequest request) {
-        User user = UserRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: ") + id);
-
-        //article.update(request.getTitle(), request.getContent());
-        return user;
-    }*/
+//    //User 전체 조회
+//    public List<User> findAll() {
+//        return userRepository.findAll();
+//    }
+//
+//    //User id로 조회x`x`
+//    public User findById(Long id) {
+//        return userRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+//    }
+//
+//    //User 삭제
+//    public void delete(Long id) {
+//        userRepository.deleteById(id);
+//    }
+//
+//    //User 수정
+//   /* @Transactional
+//    public User update(Long id, UpdatableUserRequest request) {
+//        User user = UserRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("not found: ") + id);
+//
+//        //article.update(request.getTitle(), request.getContent());
+//        return user;
+//    }*/
 
 }
