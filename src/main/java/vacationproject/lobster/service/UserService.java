@@ -24,7 +24,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    //User id로 조회
+    //User id로 조회x`x`
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));

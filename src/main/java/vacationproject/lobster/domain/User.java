@@ -45,6 +45,4 @@ public class User {
         this.email = email;
         this.phoneNum = phoneNum;
     }
-
-
 }
