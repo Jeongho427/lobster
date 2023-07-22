@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -14,10 +17,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "uId")
-    private Long id;
-
     @Column(name = "user_id")
+    private Long uId;
+
+    @Column(name = "login_id")
     private String userId;
 
     @Column(name = "password")
@@ -37,6 +40,17 @@ public class User {
 
     @Column(name = "phone_img")
     private String profile_img;
+
+    @OneToOne(mappedBy = "calenderOwner")
+    private Calender calender;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Group> groups = new ArrayList<>();
+
+    @OneToOne(mappedBy = "userId")
+    private Member member;
+
+
 
     @Builder
     public User(String userId, String password, String userName, String email, String phoneNum, String auth) {
