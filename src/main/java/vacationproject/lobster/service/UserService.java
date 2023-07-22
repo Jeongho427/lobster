@@ -30,16 +30,27 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String login(String userId, String password) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            throw new RuntimeException("해당 사용자 정보가 존재하지 않습니다.");
-        }
-        // 비밀번호 검증 (예시로서 단순히 비밀번호 일치 여부만 확인한다고 가정)
-        if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-        }
-        return userId;
+//    public String login(String userId, String password) {
+//        User user = userRepository.findByUserId(userId);
+//        if (user == null) {
+//            throw new RuntimeException("해당 사용자 정보가 존재하지 않습니다.");
+//        }
+//        if (!user.getPassword().equals(password)) {
+//            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+//        }
+//        return userId;
+//    }
+
+    // 아이디 중복 체크
+    public boolean isUserIdExists(String userId) {
+        User user = userRepository.findByUserId(userId); // 변수 이름 변경
+        return user != null;
+    }
+
+    // 이메일 중복 체크
+    public boolean isEmailExists(String email) {
+        User user = userRepository.findByEmail(email);
+        return user != null;
     }
 
 

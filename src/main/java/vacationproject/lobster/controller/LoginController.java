@@ -32,9 +32,6 @@ public class LoginController {
     // 로그인 계정 확인
     public boolean checkLogin(String userId, String password) {
         User user = userRepository.findByUserId(userId);
-        if (user == null || !user.getPassword().equals(password)) {
-            return false;
-        }
-        return true;
+        return user != null && user.getPassword().equals(password);
     }
 }
