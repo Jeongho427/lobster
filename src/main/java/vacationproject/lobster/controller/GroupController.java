@@ -21,6 +21,7 @@ public class GroupController {
     @PostMapping("/api/groups")
     public ResponseEntity<Group> createGroup(@RequestBody AddGroupRequest request) {
         Group savedGroup = groupService.save(request);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedGroup);
     }
@@ -38,7 +39,7 @@ public class GroupController {
     }
 
 
-    //Group 하나 조회
+    //Group id로 단건 조회
     @GetMapping("/api/groups/{id}")
     public ResponseEntity<GroupResponse> findGroupById(@PathVariable long id) {
         Group group = groupService.findById(id);

@@ -2,13 +2,14 @@ package vacationproject.lobster.dto;
 
 import lombok.Getter;
 import vacationproject.lobster.domain.Group;
+import vacationproject.lobster.domain.User;
 
 @Getter
 public class GroupResponse {
 
     private final String groupName;
     private final int memberCnt;
-    private final Long creator;
+    private final User creator;
 
     public GroupResponse(Group group) {
         this.groupName = group.getGroupName();

@@ -1,19 +1,23 @@
 package vacationproject.lobster.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "my_group")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "gId")
+    @Column(name = "group_id")
     private Long gId;
 
     @Column(name = "group_name")
@@ -22,11 +26,15 @@ public class Group {
     @Column(name = "member_cnt")
     private int memberCnt;
 
-    @Column(name = "creator")
-    private Long creator;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
+
+    @OneToMany(mappedBy = "groupId")
+    private List<Member> members = new ArrayList<>();
 
     @Builder
-    public Group(String groupName, int memberCnt, Long creator) {
+    public Group(String groupName, int memberCnt, User creator) {
         this.groupName = groupName;
         this.memberCnt = memberCnt;
         this.creator = creator;
