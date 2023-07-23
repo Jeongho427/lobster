@@ -25,6 +25,12 @@ public class Member {
     @JoinColumn(name = "user_id")
     private User userId;
 
+   /* @Column(name = "group_id")
+    private Long groupId;
+
+    @Column(name = "user_id")
+    private Long userId;*/
+
     @Column(name = "color")
     private String color;
 

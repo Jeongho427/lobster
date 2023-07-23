@@ -26,6 +26,9 @@ public class Group {
     @Column(name = "member_cnt")
     private int memberCnt;
 
+    /*@Column(name = "creator")
+    private Long creator;*/
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;

@@ -19,7 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @PrimaryKeyJoinColumn(name = "user_id")
     private Long uId;
 
     @Column(name = "login_id")
@@ -43,6 +43,7 @@ public class User {
     @Column(name = "phone_img")
     private String profile_img;
 
+
     @OneToOne(mappedBy = "calenderOwner")
     private Calender calender;
 
@@ -55,7 +56,7 @@ public class User {
 
 
     @Builder
-    public User(String userId, String password, String userName, String email, String phoneNum, String auth) {
+    public User(String userId, String password, String userName, String email, String phoneNum) {
         this.userId = userId;
         this.password = password;
         this.userName = userName;
