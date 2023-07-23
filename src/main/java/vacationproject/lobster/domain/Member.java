@@ -22,7 +22,7 @@ public class Member {
     private Group groupId;
 
     @OneToOne
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User userId;
 
     @Column(name = "color")
