@@ -1,8 +1,8 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/lobster_hwang
-    username: lobster_hwang
+    url: jdbc:mysql://localhost:3306/lobster
+    username: root
     password: 1234
   webflux:
     cors:
@@ -10,28 +10,26 @@ spring:
       allowed-origins: http://localhost:3000
       allowed-methods: GET, POST, PUT, DELETE
       allowed-headers: Content-Type, Authorization
-  mail:
-    host: smtp.naver.com
-    port: 465
-    username: lobster_team@naver.com
-    password: givemelobster!!
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.naver.com
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
+    mail:
+      host: smtp.naver.com
+      port: 465
+      username: lobster_team@naver.com
+      password: givemelobster!!
+      properties:
+        mail.smtp.auth: true
+        mail.smtp.ssl.enable: true
+        mail.smtp.ssl.trust: smtp.naver.com
+    jpa:
       hibernate:
-        naming:
-          implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbm
-          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        defer-datasource-initialization: true
-        format_sql: 'true'
-
-server:
-  port: 8080
+        ddl-auto: create-drop
+      show-sql: true
+      properties:
+        hibernate:
+          naming:
+            implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbm
+            physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+          dialect: org.hibernate.dialect.MySQL8Dialect
+          defer-datasource-initialization: true
+          format_sql: 'true'
+  server:
+    port: 8080
