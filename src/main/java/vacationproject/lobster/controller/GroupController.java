@@ -38,7 +38,6 @@ public class GroupController {
                 .body(groups);
     }
 
-
     //Group id로 단건 조회
     @GetMapping("/api/groups/{id}")
     public ResponseEntity<GroupResponse> findGroupById(@PathVariable long id) {

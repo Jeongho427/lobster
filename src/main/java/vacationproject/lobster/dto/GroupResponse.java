@@ -9,7 +9,7 @@ public class GroupResponse {
 
     private final String groupName;
     private final int memberCnt;
-    private final User creator;
+    private User creator;
 
     public GroupResponse(Group group) {
         this.groupName = group.getGroupName();
