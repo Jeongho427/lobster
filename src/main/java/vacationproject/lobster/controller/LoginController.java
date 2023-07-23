@@ -49,7 +49,7 @@ public class LoginController {
             String verificationCode = userService.generateVerificationCode();
             mailSenderService.run(request.getEmail(), verificationCode);
 
-            return ResponseEntity.ok("인증번호 : " + verificationCode);
+            return ResponseEntity.ok(verificationCode);
         } else {
             return ResponseEntity.badRequest().body("아이디와 이메일이 일치하지 않습니다.");
         }
@@ -57,6 +57,8 @@ public class LoginController {
 
     // DB에서 아이디와 이메일 확인
     public boolean checkIdAndEmail(String userId, String email) {
+        System.out.println(userId);
+        System.out.println(email);
         User user = userRepository.findByUserId(userId);
         User user_email = userRepository.findByEmail(email);
 
@@ -68,8 +70,11 @@ public class LoginController {
         String userId = request.getUserId();
         String newPassword = request.getNewPassword();
 
-        // 아이디에 해당하는 사용자를 데이터베이스에서 찾아옵니다.
+        System.out.println(userId);
+        System.out.println(newPassword);
+
         User user = userRepository.findByUserId(userId);
+
         if (user != null) {
             user.setPassword(newPassword);
 
@@ -77,7 +82,6 @@ public class LoginController {
 
             return ResponseEntity.ok("새로운 비밀번호가 설정되었습니다.");
         } else {
-            // 아이디에 해당하는 사용자가 없는 경우 에러 메시지를 클라이언트에게 보냅니다.
             return ResponseEntity.badRequest().body("사용자를 찾을 수 없습니다.");
         }
     }
