@@ -3,6 +3,7 @@ package vacationproject.lobster.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import vacationproject.lobster.service.MailSenderService;
 import vacationproject.lobster.service.UserService;
 
 @RestController
@@ -11,9 +12,11 @@ import vacationproject.lobster.service.UserService;
 public class MembershipController {
 
     private final UserService userService;
+    private final MailSenderService mailSenderService;
 
-    public MembershipController(UserService userService) {
+    public MembershipController(UserService userService, MailSenderService mailSenderService) {
         this.userService = userService;
+        this.mailSenderService = mailSenderService;
     }
 
     // 회원가입 저장
@@ -29,6 +32,19 @@ public class MembershipController {
         return ResponseEntity.ok("회원 가입 성공");
     }
 
+    // 이메일 중복 체크 후 메일 전송
+    @PostMapping("/emailVerify")
+    public ResponseEntity<String> verifyCode(@RequestParam("email") String email) {
+        if (userService.isEmailExists(email)) {
+            return ResponseEntity.badRequest().body("Email already exists.");
+        } else {
+            String verificationCode = userService.generateVerificationCode();
+            mailSenderService.run(email, verificationCode);
+
+            return ResponseEntity.ok(verificationCode);
+        }
+    }
+
     // 아이디 중복 체크
     @PostMapping("/userIdExists")
     public ResponseEntity<String> checkUserIdExists(@RequestParam("user_id") String userId) {
@@ -40,4 +56,7 @@ public class MembershipController {
             return ResponseEntity.ok("User ID is available.");
         }
     }
+
+    //
+
 }

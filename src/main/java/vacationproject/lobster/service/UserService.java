@@ -1,6 +1,7 @@
 package vacationproject.lobster.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddUserRequest;
@@ -52,6 +53,12 @@ public class UserService {
         User user = userRepository.findByEmail(email);
         return user != null;
     }
+
+    // 랜덤 코드 생성
+    public String generateVerificationCode() {
+        return RandomStringUtils.randomNumeric(6);
+    }
+
 
 
     //User 등록
