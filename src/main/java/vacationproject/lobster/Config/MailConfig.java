@@ -14,7 +14,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "vacationproject.lobster")
 public class MailConfig {
 
-    @Value("{spring.mail.host}")
+    @Value("${spring.mail.host}")
     private String host;
 
     @Value("${spring.mail.port}")
