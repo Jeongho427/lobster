@@ -29,7 +29,7 @@ public class Group {
     /*@Column(name = "creator")
     private Long creator;*/
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User creator;
 

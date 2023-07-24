@@ -14,6 +14,8 @@ public class AddCalenderRequest {
 
     private String day_start;
     private String day_end;
+    private String time_start;
+    private String time_end;
     private String contents;
     private User calenderOwner;
 
@@ -21,6 +23,8 @@ public class AddCalenderRequest {
         return Calender.builder()
                 .day_start(day_start)
                 .day_end(day_end)
+                .time_start(time_start)
+                .time_end(time_end)
                 .contents(contents)
                 .calenderOwner(calenderOwner)
                 .build();
