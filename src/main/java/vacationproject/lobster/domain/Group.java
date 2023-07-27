@@ -36,6 +36,10 @@ public class Group {
     @OneToMany(mappedBy = "groupId")
     private List<Member> members = new ArrayList<>();
 
+    public void update(String groupName) {
+        this.groupName = groupName;
+    }
+
     @Builder
     public Group(String groupName, int memberCnt, User creator) {
         this.groupName = groupName;

@@ -2,11 +2,14 @@ package vacationproject.lobster.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.dto.AddCalenderRequest;
+import vacationproject.lobster.dto.UpdateCalenderRequest;
 import vacationproject.lobster.repository.CalenderRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +38,16 @@ public class CalenderService {
         calenderRepository.deleteById(id);
     }
 
-    //Calender 수정
+    // Calender 수정
+    @Transactional
+    public Calender update(Long id, UpdateCalenderRequest request) {
+        Calender calender = calenderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+
+        calender.update(request.getDayStart(), request.getDayEnd(), request.getTimeStart(), request.getTimeEnd(),
+                request.getContents(), request.getCalenderOwner());
+
+        return calender;
+    }
 
 }

@@ -34,6 +34,12 @@ public class Member {
     @Column(name = "color")
     private String color;
 
+    public void update(Group groupId, User userId, String color) {
+        this.groupId = groupId;
+        this.userId = userId;
+        this.color = color;
+    }
+
     @Builder
     public Member(Group groupId, User userId, String color) {
         this.groupId = groupId;
