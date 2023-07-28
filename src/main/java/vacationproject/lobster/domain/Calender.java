@@ -23,6 +23,12 @@ public class Calender {
     @Column(name = "day_end")
     private String day_end;
 
+    @Column(name = "time_start")
+    private String time_start;
+
+    @Column(name = "time_end")
+    private String time_end;
+
     @Column(name = "contents")
     private String contents;
 
@@ -33,12 +39,22 @@ public class Calender {
     @JoinColumn(name = "user_id")
     private User calenderOwner;
 
-    @Builder
-    public Calender(String day_start, String day_end, String contents, User calenderOwner) {
+    public void update(String day_start, String day_end, String time_start, String time_end, String contents, User calenderOwner) {
         this.day_start = day_start;
         this.day_end = day_end;
+        this.time_start = time_start;
+        this.time_end = time_end;
+        this.contents = contents;
+        this.calenderOwner = calenderOwner;
+    }
+
+    @Builder
+    public Calender(String day_start, String day_end, String time_start, String time_end, String contents, User calenderOwner) {
+        this.day_start = day_start;
+        this.day_end = day_end;
+        this.time_start = time_start;
+        this.time_end = time_end;
         this.contents = contents;
         this.calenderOwner = calenderOwner;
     }
 }
-

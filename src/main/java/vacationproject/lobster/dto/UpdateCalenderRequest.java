@@ -8,9 +8,12 @@ import vacationproject.lobster.domain.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateGroupRequest {
-    private String groupName;
-    private int memberCnt;
-    private User creator;
+public class UpdateCalenderRequest {
+    private String dayStart;
+    private String dayEnd;
+    private String timeStart;
+    private String timeEnd;
+    private String contents;
+    private User calenderOwner;
 
 }

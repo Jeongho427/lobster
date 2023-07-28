@@ -8,11 +8,12 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class MailSenderService implements ApplicationRunner {
+
     private final JavaMailSender mailSender;
     private String verificationCode;
 
@@ -40,8 +41,8 @@ public class MailSenderService implements ApplicationRunner {
             }
         }
     }
-//    public String getVerificationCode() {
-//        return verificationCode;
-//    }
+    /*public String getVerificationCode() {
+        return verificationCode;
+    }*/
 
 }

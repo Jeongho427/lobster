@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.dto.AddCalenderRequest;
 import vacationproject.lobster.dto.CalenderResponse;
+import vacationproject.lobster.dto.UpdateCalenderRequest;
 import vacationproject.lobster.service.CalenderService;
 
 import java.util.List;
@@ -57,6 +58,13 @@ public class CalenderController {
     }
 
     //Calender 수정
+    @PutMapping("/api/calenders/{id}")
+    public ResponseEntity<Calender> updateArticle(@PathVariable long id,
+                                                  @RequestBody UpdateCalenderRequest request) {
+        Calender updatedCalender = calenderService.update(id, request);
 
+        return ResponseEntity.ok()
+                .body(updatedCalender);
+    }
 
 }

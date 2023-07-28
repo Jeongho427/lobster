@@ -29,15 +29,16 @@ public class Group {
     /*@Column(name = "creator")
     private Long creator;*/
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private User creator;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
+    @OneToMany(mappedBy = "groupId")
+    private List<Member> members = new ArrayList<>();
 
-//    private List<Member> members = new ArrayList<>();
+    public void update(String groupName) {
+        this.groupName = groupName;
+    }
 
     @Builder
     public Group(String groupName, int memberCnt, User creator) {
