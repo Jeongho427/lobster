@@ -3,9 +3,12 @@ package vacationproject.lobster.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
+import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddMemberRequest;
 import vacationproject.lobster.dto.UpdateMemberRequest;
+import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final GroupRepository groupRepository;
 
     //Member 생성
     public Member save(AddMemberRequest memberRequest) {
@@ -33,7 +37,22 @@ public class MemberService {
     }
 
     //Member 삭제
+    @Transactional
     public void delete(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+
+        Group group = member.getGroupId();
+
+        // 멤버가 생성자인지 확인
+        if (group.getCreator().equals(member.getUserId())) {
+            List<Member> members = group.getMembers();
+            for (Member deleteMember : members) {
+                memberRepository.delete(deleteMember);
+                groupRepository.deleteById(id);
+            }
+        }
+        // 멤버를 삭제합니다.
         memberRepository.deleteById(id);
     }
 
@@ -45,7 +64,7 @@ public class MemberService {
 
         member.update(request.getGroupId(), request.getUserId(), request.getColor());
 
-        //member에서 탈퇴한 group원이 creator인 경우 creator의 권한을 다른 사람에게 넘겨줘야한다
+        //member에서 탈퇴한 그룹원이 creator인 경우 creator의 권한을 다른 사람에게 넘겨줘야한다
 
         return member;
     }
