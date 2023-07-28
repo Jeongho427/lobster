@@ -36,6 +36,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 
+	// token
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+//	implementation 'commons-validator:commons-validator:1.7'
+
+//	implementation 'io.jsonwebtoken:jjwt:0.11.2'
 }
 
 tasks.named('test') {

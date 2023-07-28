@@ -30,11 +30,14 @@ public class Group {
     private Long creator;*/
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User creator;
 
-    @OneToMany(mappedBy = "groupId")
-    private List<Member> members = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
+
+//    private List<Member> members = new ArrayList<>();
 
     @Builder
     public Group(String groupName, int memberCnt, User creator) {

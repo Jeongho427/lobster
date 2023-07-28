@@ -9,6 +9,7 @@ import vacationproject.lobster.dto.AddGroupRequest;
 import vacationproject.lobster.dto.GroupResponse;
 import vacationproject.lobster.service.GroupService;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -57,4 +58,17 @@ public class GroupController {
     }
 
     //Group 수정
+
+    // 그룹에서 아이디 검색 후 이메일 보내기
+    @PostMapping("/{groupId}/invite")
+    public ResponseEntity<String> inviteUserToGroup(@PathVariable("groupId") String groupId, @RequestParam("userId") String userId) {
+        try {
+            groupService.inviteUserToGroup(groupId, userId);
+            return ResponseEntity.ok("User invited to group successfully!!!");
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only group creator can invite members.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid group ID.");
+        }
+    }
 }

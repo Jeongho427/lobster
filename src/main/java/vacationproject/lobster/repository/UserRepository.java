@@ -6,6 +6,6 @@ import vacationproject.lobster.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
-    User findByUserId(@Param("user_id")String userId);
+    User findByUserId(String userId); // 로그인 아이디
     User findByPhoneNum(@Param("phone_num") String phoneNum);
 }

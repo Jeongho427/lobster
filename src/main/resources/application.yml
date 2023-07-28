@@ -4,6 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/lobster_hwang
     username: lobster_hwang
     password: 1234
+
   webflux:
     cors:
       enabled: true
@@ -19,6 +20,17 @@ spring:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
+#
+#custom:
+#  jwt:
+#    secretKey: dGVhbUxvYnN0ZXIxOTk4dGVhbUxvYnN0ZXIxOTk4dGVhbUxvYnN0ZXIxOTk4
+#    expirationTime: 1800000
+#    expirationTimeInMinutes: 30
+
+jwt:
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+  password: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+
 
   jpa:
     hibernate:
@@ -35,3 +47,6 @@ spring:
 
 server:
   port: 8080
+
+
+

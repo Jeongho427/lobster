@@ -2,18 +2,21 @@ package vacationproject.lobster.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddUserRequest;
 import vacationproject.lobster.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -58,6 +61,13 @@ public class UserService {
     public String generateVerificationCode() {
         return RandomStringUtils.randomNumeric(6);
     }
+
+//    // 그룹 서비스로 아이디 연결하는 메소드
+//    public User findUserById(Long userId) {
+//        Optional<User> userOptional = userRepository.findById(userId);
+//        return userOptional.orElse(null);
+//    }
+
 
 
 
