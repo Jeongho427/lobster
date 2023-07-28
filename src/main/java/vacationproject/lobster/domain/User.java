@@ -1,7 +1,6 @@
 package vacationproject.lobster.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +39,7 @@ public class User {
     @Column(name = "is_login")
     private boolean is_login;
 
-    @Column(name = "phone_img")
+    @Column(name = "profile_img")
     private String profile_img;
 
 
