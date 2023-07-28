@@ -64,8 +64,6 @@ public class MemberService {
 
         member.update(request.getGroupId(), request.getUserId(), request.getColor());
 
-        //member에서 탈퇴한 그룹원이 creator인 경우 creator의 권한을 다른 사람에게 넘겨줘야한다
-
         return member;
     }
 
