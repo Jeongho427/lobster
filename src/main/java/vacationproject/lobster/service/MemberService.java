@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
-import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddMemberRequest;
 import vacationproject.lobster.dto.UpdateMemberRequest;
 import vacationproject.lobster.repository.GroupRepository;
@@ -52,7 +51,7 @@ public class MemberService {
                 groupRepository.deleteById(id);
             }
         }
-        // 멤버를 삭제합니다.
+
         memberRepository.deleteById(id);
     }
 
