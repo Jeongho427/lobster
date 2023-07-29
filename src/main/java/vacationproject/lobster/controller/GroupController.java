@@ -80,20 +80,20 @@ public class GroupController {
         if (user != null && user.getEmail() != null) {
             String invitationToken = invitationService.generateInvitationToken(groupId, userId);
             // 이것이 링크
-            String invitationLink = "http://localhost:8080/api/" + groupId + "/invite" + invitationToken + "_" + userId;
+            String invitationLink = "http://10.14.4.28:8080/api/" + groupId + "/invite" + invitationToken + "_" + userId;
             // mail 보내기 코드
             mailSenderService.invite(user.getEmail(), invitationLink);
 
-            return invitationLink;
+            return invitationToken;
         } else {
             return "User not found or already exits.";
         }
     }
 
     // 그룹에 링크를 누르면 멤버를 추가하는 기능
-    @GetMapping("/api/{groupId}／invite_/{token}/_{userId}")
+    @GetMapping("/api/inviteToken")
     public Map<String, String> joinGroup(
-            @PathVariable long groupId,
+            @RequestParam("groupId") long groupId,
             @RequestParam("token") String token,
             @RequestParam("userId") String loginId
     ) { String userIdAndGroupId = invitationService.getUserIdAndGroupIdFromToken(token);
