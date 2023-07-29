@@ -4,22 +4,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vacationproject.lobster.domain.Calender;
+import org.springframework.web.servlet.view.RedirectView;
 import vacationproject.lobster.domain.Group;
+import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddGroupRequest;
 import vacationproject.lobster.dto.GroupResponse;
-import vacationproject.lobster.dto.UpdateCalenderRequest;
 import vacationproject.lobster.dto.UpdateGroupRequest;
+import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.GroupService;
+import vacationproject.lobster.service.InvitationService;
+import vacationproject.lobster.service.MailSenderService;
 
 import java.nio.file.AccessDeniedException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class GroupController {
 
     private final GroupService groupService;
+    private final UserRepository userRepository;
+    private final InvitationService invitationService;
+    private final MailSenderService mailSenderService;
 
     //Group 생성
     @PostMapping("/api/groups")
@@ -52,7 +62,7 @@ public class GroupController {
     }
 
     //Group 삭제
-    @DeleteMapping("/api//groups/{id}")
+    @DeleteMapping("/api/groups/{id}")
     public ResponseEntity<Void> deleteGroup(@PathVariable long id) {
         groupService.delete(id);
 
@@ -60,23 +70,65 @@ public class GroupController {
                 .build();
     }
 
-    // 그룹에서 아이디 검색 후 이메일 보내기
-    @PostMapping("/{groupId}/invite")
-    public ResponseEntity<String> inviteUserToGroup(@PathVariable("groupId") String groupId, @RequestParam("userId") String userId) {
-        try {
-            groupService.inviteUserToGroup(groupId, userId);
-            return ResponseEntity.ok("User invited to group successfully!!!");
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only group creator can invite members.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid group ID.");
+    // 그룹 초대 기능
+    @PostMapping("/api/invite/{groupId}") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.
+    public String inviteUser(@PathVariable long groupId, @RequestBody Map<String, String> request) {
+        String userId = request.get("userId");
+
+        User user = userRepository.findByUserId(userId);
+
+        if (user != null && user.getEmail() != null) {
+            String invitationToken = invitationService.generateInvitationToken(groupId, userId);
+            // 이것이 링크
+            String invitationLink = "http://localhost:8080/api/groups/" + groupId + "/invite?token=" + invitationToken;
+            // mail 보내기 코드
+            mailSenderService.invite(user.getEmail(), invitationLink);
+
+            return invitationLink;
+        } else {
+            return "User not found.";
         }
+    }
+
+    // 그룹에 링크를 누르면 멤버를 추가하는 기능
+    @GetMapping("/api/checkInvite/{groupId}")
+    // 서버로 그룹의 아이디와 토큰을 GET 요청
+    public Map<String, String> joinGroup(@PathVariable long groupId, @RequestParam("token") String token) {
+        String userIdAndGroupId = invitationService.getUserIdAndGroupIdFromToken(token);
+
+        if (userIdAndGroupId != null) {
+            String[] userIdAndGroupIdArray = userIdAndGroupId.split("_");
+            String userId = userIdAndGroupIdArray[0]; // 토큰에서 해체한 유저 아이디
+            long invitedGroupId = Long.parseLong(userIdAndGroupIdArray[1]); // 토큰해서 해제한 그룹 아이디.
+
+            // 초대 링크의 그룹 ID와 요청한 그룹 ID가 일치하는지 확인
+            if (groupId == invitedGroupId) {
+                groupService.addMemberToGroup(groupId, userId);
+
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Successfully joined the group.");
+                return response;
+            }
+        }
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid or expired invitation link.");
+        return response;
+    }
+
+    // userId가 DB에 존재하는지 체크
+    public String checkUserId(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user != null) {
+            System.out.println("이메일 존재 합니다.");
+            return user.getEmail();
+        }
+        return null;
     }
 
     // 그룹 수정
     @PutMapping("/api/groups/{id}")
     public ResponseEntity<Group> updateArticle(@PathVariable long id,
-                                                  @RequestBody UpdateGroupRequest request) {
+                                               @RequestBody UpdateGroupRequest request) {
         Group updatedGroup = groupService.update(id, request);
 
         return ResponseEntity.ok()

@@ -3,12 +3,13 @@ package vacationproject.lobster.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Getter @Setter
 public class AddGroupRequest {
 
     private String groupName;

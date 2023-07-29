@@ -1,5 +1,6 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,15 +15,19 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // 멤버를 구분하는 ID
     @Column(name = "member_id")
     private Long mId;
 
+    // 그룹 테이블의 group_id와 연결되어있음
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group groupId;
 
+    // 유저 테이블의 user_id와 연결되어있음
     @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User userId;
 
    /* @Column(name = "group_id")

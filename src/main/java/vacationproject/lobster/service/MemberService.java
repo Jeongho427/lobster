@@ -35,7 +35,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    //Member 삭제
+    //Member 삭제 - 그룹에서 맴버를 삭제 or creator면 그룹 까지 삭제
     @Transactional
     public void delete(Long id) {
         Member member = memberRepository.findById(id)
@@ -51,20 +51,21 @@ public class MemberService {
                 groupRepository.deleteById(id);
             }
         }
-
         memberRepository.deleteById(id);
     }
 
-    //Member 수정
-    @Transactional
-    public Member update(Long id, UpdateMemberRequest request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
-        member.update(request.getGroupId(), request.getUserId(), request.getColor());
 
-        return member;
-    }
+    //Member 수정 -
+//    @Transactional
+//    public Member update(Long id, UpdateMemberRequest request) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+//
+//        member.update(request.getGroupId(), request.getUserId(), request.getColor());
+//
+//        return member;
+//    }
 
 
 }

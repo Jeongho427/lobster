@@ -4,23 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vacationproject.lobster.domain.Group;
+import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddGroupRequest;
 import vacationproject.lobster.dto.UpdateGroupRequest;
 import vacationproject.lobster.repository.GroupRepository;
-import org.springframework.stereotype.Service;
-import vacationproject.lobster.domain.Group;
-import vacationproject.lobster.domain.Member;
-import vacationproject.lobster.domain.User;
-import vacationproject.lobster.repository.GroupRepository;
-import vacationproject.lobster.service.UserService;
-import java.util.Optional;
-
-//추가
-import org.springframework.beans.factory.annotation.Autowired;
-
-
-import java.nio.file.AccessDeniedException;
+import vacationproject.lobster.repository.MemberRepository;
+import vacationproject.lobster.repository.UserRepository;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,9 +19,29 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final MailSenderService mailSenderService;
+    private final InvitationService invitationService;
+    private final MemberRepository memberRepository;
+
 
     //Group 등록
     public Group save(AddGroupRequest groupRequest) {
+        // memberCnt를 1로 설정
+        groupRequest.setMemberCnt(1);
+
+        // creator 객체에서 user_id를 가져와 Group 엔티티에 설정
+        User creator = groupRequest.getCreator();
+        if (creator != null) {
+            String userId = creator.getUserId();
+            // userId가 null이거나 비어있지 않다고 가정하고, Group 엔티티에 creator를 설정
+            groupRequest.setCreator(User.builder().userId(userId).build());
+        } else {
+            // creator가 null인 경우에 대한 처리를 합니다. (필요하면 추가)
+            // creator가 null일 수 없다고 가정
+            throw new IllegalArgumentException("Creator cannot be null.");
+        }
+
         return groupRepository.save(groupRequest.toEntity());
     }
 
@@ -60,28 +70,27 @@ public class GroupService {
         return group;
     }
 
-    public void inviteUserToGroup(String groupId, String userId) throws AccessDeniedException {
-        String currentUserId = "creator_id"; // 현재 로그인한 사용자의 u_id
+    // 해당 그룹에 멤버 추가 기능
+    public void addMemberToGroup(long groupId, String userId) {
+        User user = userRepository.findByUserId(userId);
 
-        if (!currentUserId.equals("creator_id")) {
-            throw new AccessDeniedException("Only group creator can invite members.");
+        // 그룹 DB에 있나 체크
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
+
+        // 이미 해당 유저가 멤버인지 확인 (중복 가입 방지)
+        boolean isUserAlreadyMember = memberRepository.existsByGroupIdAndUserId(group, user);
+
+        if (isUserAlreadyMember) {
+            throw new IllegalArgumentException("User with id " + userId + " is already a member of the group.");
         }
 
+        Member member = Member.builder()
+                .groupId(group)
+                .userId(user)
+                .color("some_color") // 멤버의 컬러 정보를 추가로 설정하려면 이 부분을 수정
+                .build();
 
-
-        // 그룹에 멤버로 추가하고 저장
-//        Group group = groupRepository.findById(Long.parseLong(groupId)).orElseThrow(() -> new IllegalArgumentException("Invalid group ID."));
-//        Member member = new Member(group, user, "default_color"); // 여기서 "default_color"는 예시로 사용자의 색상 정보를 나타냅니다.
-//        group.getMembers().add(member);
-//        groupRepository.save(group);
-//
-//        group.update(request.getGroupName());
-//
-//        return group;
+        memberRepository.save(member);
     }
-
-    //Group에서 초대 권한이 생성자에게 있기 때문에 생성자가 나가면 그룹에 새로운 인원 초대가 안되므로 생성자를 갱신해줘야함
-    //=> member에서 할까?
-
-
 }

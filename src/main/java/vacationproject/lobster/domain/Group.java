@@ -1,5 +1,6 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,10 +30,13 @@ public class Group {
     /*@Column(name = "creator")
     private Long creator;*/
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    //유저 테이블의 user_id와 연결되어있는 creator
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "creator")
+    @JsonManagedReference
     private User creator;
 
+    // 멤버 테이블의 모든 정보 불러오기
     @OneToMany(mappedBy = "groupId")
     private List<Member> members = new ArrayList<>();
 

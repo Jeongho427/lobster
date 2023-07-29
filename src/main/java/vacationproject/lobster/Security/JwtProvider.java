@@ -30,7 +30,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
-                .setIssuer("test") // 토큰발급자(iss)
+//                .setIssuer(userId) // 토큰발급자(iss)
                 .setIssuedAt(now) // 발급시간(iat)
                 .setExpiration(expiration) // 만료시간(exp)
                 .claim("userId", userId) // 유저 아이디 정보를 클레임에 저장
