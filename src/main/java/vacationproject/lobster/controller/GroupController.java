@@ -80,21 +80,23 @@ public class GroupController {
         if (user != null && user.getEmail() != null) {
             String invitationToken = invitationService.generateInvitationToken(groupId, userId);
             // 이것이 링크
-            String invitationLink = "http://localhost:8080/api/groups/" + groupId + "/invite?token=" + invitationToken;
+            String invitationLink = "http://localhost:8080/api/" + groupId + "/invite" + invitationToken + "_" + userId;
             // mail 보내기 코드
             mailSenderService.invite(user.getEmail(), invitationLink);
 
             return invitationLink;
         } else {
-            return "User not found.";
+            return "User not found or already exits.";
         }
     }
 
     // 그룹에 링크를 누르면 멤버를 추가하는 기능
-    @GetMapping("/api/checkInvite/{groupId}")
-    // 서버로 그룹의 아이디와 토큰을 GET 요청
-    public Map<String, String> joinGroup(@PathVariable long groupId, @RequestParam("token") String token) {
-        String userIdAndGroupId = invitationService.getUserIdAndGroupIdFromToken(token);
+    @GetMapping("/api/{groupId}／invite_/{token}/_{userId}")
+    public Map<String, String> joinGroup(
+            @PathVariable long groupId,
+            @RequestParam("token") String token,
+            @RequestParam("userId") String loginId
+    ) { String userIdAndGroupId = invitationService.getUserIdAndGroupIdFromToken(token);
 
         if (userIdAndGroupId != null) {
             String[] userIdAndGroupIdArray = userIdAndGroupId.split("_");
@@ -103,27 +105,28 @@ public class GroupController {
 
             // 초대 링크의 그룹 ID와 요청한 그룹 ID가 일치하는지 확인
             if (groupId == invitedGroupId) {
-                groupService.addMemberToGroup(groupId, userId);
 
-                Map<String, String> response = new HashMap<>();
-                response.put("message", "Successfully joined the group.");
-                return response;
+                // 현재 로그인한 사용자의 아이디와 초대된 유저의 아이디를 비교
+                if (userId.equals( loginId)) {
+                    // 일치하면 그룹에 멤버를 추가
+                    groupService.addMemberToGroup(groupId, userId);
+
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "Successfully joined the group.");
+                    return response;
+                } else {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("error", "You are not authorized to join this group.");
+                    return response;
+                }
             }
         }
+
         Map<String, String> response = new HashMap<>();
         response.put("error", "Invalid or expired invitation link.");
         return response;
     }
 
-    // userId가 DB에 존재하는지 체크
-    public String checkUserId(String userId) {
-        User user = userRepository.findByUserId(userId);
-        if (user != null) {
-            System.out.println("이메일 존재 합니다.");
-            return user.getEmail();
-        }
-        return null;
-    }
 
     // 그룹 수정
     @PutMapping("/api/groups/{id}")
