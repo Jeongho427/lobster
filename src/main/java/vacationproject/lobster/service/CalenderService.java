@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CalenderService {
 
@@ -39,7 +40,6 @@ public class CalenderService {
     }
 
     // Calender 수정
-    @Transactional
     public Calender update(Long id, UpdateCalenderRequest request) {
         Calender calender = calenderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));

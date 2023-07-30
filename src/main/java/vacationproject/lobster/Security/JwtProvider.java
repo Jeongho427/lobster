@@ -57,4 +57,10 @@ public class JwtProvider {
         return token;
     }
 
+    //==토큰으로부터 유저 아이디 추출 메소드==//
+    public String extractUserIdFromToken(String token) {
+        Claims claims = parseJwtToken(token);
+        return claims.get("userId", String.class);
+    }
+
 }

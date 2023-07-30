@@ -61,6 +61,32 @@ public class GroupService {
         groupRepository.deleteById(id);
     }
 
+    //Group 탈퇴
+    public void leaveGroup(Long groupId, Long userId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid group ID."));
+
+        // 해당 그룹에 속한 모든 멤버 조회
+        List<Member> members = group.getMembers();
+
+        // 그룹 생성자인 경우 그룹 삭제 및 멤버들 삭제
+        if (group.getCreator().getUserId().equals(userId)) {
+            for (Member member : members) {
+                memberRepository.deleteById(member.getMId());
+            }
+            groupRepository.deleteById(groupId);
+        }
+        else {
+            // 그룹에서 해당 사용자 삭제
+            for (Member member : members) { // Member 엔티티의 userId 필드에 있는 User 엔티티의 userId 필드를 비교
+                if (member.getGroupId().equals(groupId) && member.getUserId().equals(userId)) {
+                    memberRepository.deleteById(member.getMId());
+                    break;
+                }
+            }
+        }
+    }
+
     //Group 수정 (이름만 수정 가능) 멤버 수는 자동으로 갱신되게, 그룹 생성자는 안바뀌게
     @Transactional
     public Group update(Long id, UpdateGroupRequest request) {
