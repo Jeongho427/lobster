@@ -47,7 +47,7 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
-    //Group id로 조회
+    //Group id로 단건 조회
     public Group findById(Long id) {
         return groupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));

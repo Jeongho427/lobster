@@ -57,7 +57,7 @@ public class CalenderController {
                 .build();
     }
 
-    //Calender 수정
+    //Calender 수정 => 일정 추가 및 수정
     @PutMapping("/api/calenders/{id}")
     public ResponseEntity<Calender> updateArticle(@PathVariable long id,
                                                   @RequestBody UpdateCalenderRequest request) {
