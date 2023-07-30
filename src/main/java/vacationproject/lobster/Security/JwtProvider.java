@@ -35,7 +35,7 @@ public class JwtProvider {
                 .setExpiration(expiration) // 만료시간(exp)
                 .claim("userId", userId) // 유저 아이디 정보를 클레임에 저장
                 .claim("userName", userName) // 유저 이름 정보를 클레임에 저장
-                .claim("uId", uId) // 유저의 숫자 아이디 클레임에 저장
+                .claim("uId", uId) // 유저의 table 아이디 클레임에 저장
                 .signWith(key, SignatureAlgorithm.HS256) // 알고리즘, 시크릿 키
                 .compact();
     }
