@@ -39,15 +39,14 @@ public class CalenderService {
         calenderRepository.deleteById(id);
     }
 
-    // Calender 수정
+    // Calender 수정 => 일정 추가 및 수정
     public Calender update(Long id, UpdateCalenderRequest request) {
         Calender calender = calenderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
         calender.update(request.getDayStart(), request.getDayEnd(), request.getTimeStart(), request.getTimeEnd(),
-                request.getContents(), request.getCalenderOwner());
+                request.getContents());
 
         return calender;
     }
-
 }

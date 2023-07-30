@@ -18,10 +18,7 @@ import java.util.List;
 public class GroupService {
 
     private final GroupRepository groupRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
-    private final MailSenderService mailSenderService;
-    private final InvitationService invitationService;
     private final MemberRepository memberRepository;
 
 

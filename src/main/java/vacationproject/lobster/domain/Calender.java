@@ -39,13 +39,12 @@ public class Calender {
     @JoinColumn(name = "user_id")
     private User calenderOwner;
 
-    public void update(String day_start, String day_end, String time_start, String time_end, String contents, User calenderOwner) {
+    public void update(String day_start, String day_end, String time_start, String time_end, String contents) {
         this.day_start = day_start;
         this.day_end = day_end;
         this.time_start = time_start;
         this.time_end = time_end;
         this.contents = contents;
-        this.calenderOwner = calenderOwner;
     }
 
     @Builder
