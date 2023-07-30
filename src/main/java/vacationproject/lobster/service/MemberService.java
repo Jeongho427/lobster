@@ -13,7 +13,6 @@ import vacationproject.lobster.repository.MemberRepository;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class MemberService {
 
@@ -36,43 +35,37 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    //Member 삭제
-    public void delete(Long id){
-        memberRepository.deleteById(id);
-    }
-
-    /*public void delete(Long id) {
+    //Member 삭제 - 그룹에서 맴버를 삭제 or creator면 그룹 까지 삭제
+    @Transactional
+    public void delete(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
         Group group = member.getGroupId();
-        List<Member> members = group.getMembers();
 
         // 멤버가 생성자인지 확인
         if (group.getCreator().equals(member.getUserId())) {
-            // 그룹에 속한 모든 멤버들을 삭제
+            List<Member> members = group.getMembers();
             for (Member deleteMember : members) {
                 memberRepository.delete(deleteMember);
+                groupRepository.deleteById(id);
             }
-            // 그룹을 삭제
-            groupRepository.deleteById(group.getGId());
-        } else {
-            // 그룹에 속한 현재 멤버를 삭제
-            memberRepository.delete(member);
         }
-
         memberRepository.deleteById(id);
-    }*/
-
-    //Member 수정
-    public Member update(Long id, UpdateMemberRequest request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
-
-        member.update(request.getGroupId(), request.getUserId(), request.getColor());
-
-        return member;
     }
+
+
+
+    //Member 수정 -
+//    @Transactional
+//    public Member update(Long id, UpdateMemberRequest request) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+//
+//        member.update(request.getGroupId(), request.getUserId(), request.getColor());
+//
+//        return member;
+//    }
 
 
 }

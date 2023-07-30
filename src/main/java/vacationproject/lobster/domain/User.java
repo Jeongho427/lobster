@@ -1,5 +1,7 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,10 +48,14 @@ public class User {
     @OneToOne(mappedBy = "calenderOwner")
     private Calender calender;
 
+    // 애랑
     @OneToOne(mappedBy = "creator")
+    @JsonBackReference
     private Group group;
 
+    // 애가 각각 그룹과 멤버 테이블이랑 양방퍙 매핑이 되어있음.
     @OneToOne(mappedBy = "userId")
+    @JsonBackReference
     private Member member;
 
 

@@ -41,8 +41,23 @@ public class MailSenderService implements ApplicationRunner {
             }
         }
     }
-    /*public String getVerificationCode() {
-        return verificationCode;
-    }*/
+    public void invite(String receiver, String groupLink) {
+        if (receiver != null) {
+            try {
+
+                MimeMessage m = mailSender.createMimeMessage();
+                MimeMessageHelper h = new MimeMessageHelper(m, "UTF-8");
+                h.setFrom(from);
+                h.setTo(receiver);
+                h.setSubject("그룹 초대 메일");
+                h.setText(groupLink);
+                mailSender.send(m);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
 }
