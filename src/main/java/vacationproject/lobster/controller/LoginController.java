@@ -52,7 +52,7 @@ public class LoginController {
         if (checkLogin(userId, password)) {
             // 로그인 성공 시, 토큰 생성
             User user = userRepository.findByUserId(userId);
-            String token = jwtProvider.createToken(userId, user.getUserName());
+            String token = jwtProvider.createToToken(userId, user.getUserName(), user.getUId());
 
             // 클라이언트에게 토큰을 반환
             return ResponseEntity.ok(token);
