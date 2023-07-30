@@ -88,7 +88,6 @@ public class GroupService {
     }
 
     //Group 수정 (이름만 수정 가능) 멤버 수는 자동으로 갱신되게, 그룹 생성자는 안바뀌게
-    @Transactional
     public Group update(Long id, UpdateGroupRequest request) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
