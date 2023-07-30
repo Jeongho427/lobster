@@ -96,12 +96,15 @@ public class GroupService {
     }
 
     // 해당 그룹에 멤버 추가 기능
+    @Transactional
     public void addMemberToGroup(long groupId, String userId) {
         User user = userRepository.findByUserId(userId);
 
-        // 그룹 DB에 있나 체크
+        // 그룹이 데이터베이스에 있는지 확인하고 있으면 memberCnt를 1 증가시킵니다.
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
+
+        groupRepository.incrementMemberCount(groupId);
 
         // 이미 해당 유저가 멤버인지 확인 (중복 가입 방지)
         boolean isUserAlreadyMember = memberRepository.existsByGroupIdAndUserId(group, user);
@@ -117,5 +120,7 @@ public class GroupService {
                 .build();
 
         memberRepository.save(member);
+
+
     }
 }
