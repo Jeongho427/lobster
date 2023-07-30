@@ -70,6 +70,16 @@ public class GroupController {
                 .build();
     }
 
+    //Group 탈퇴
+    @PostMapping("/api/groups/{id}/leave")
+    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId){
+        groupService.leaveGroup(groupId);
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+
     // 그룹 초대 기능
     @PostMapping("/api/invite/{groupId}") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.
     public String inviteUser(@PathVariable long groupId, @RequestBody Map<String, String> request) {
