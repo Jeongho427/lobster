@@ -52,13 +52,24 @@ public class GroupController {
     }
 
     //Group 삭제
-    @DeleteMapping("/api//groups/{id}")
+    @DeleteMapping("/api/groups/{id}/delete")
     public ResponseEntity<Void> deleteGroup(@PathVariable long id) {
         groupService.delete(id);
 
         return ResponseEntity.ok()
                 .build();
     }
+
+    //Group 탈퇴
+    @PostMapping("/api/groups/{id}/leave")
+    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId){
+        groupService.leaveGroup(groupId);
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    
 
     // 그룹에서 아이디 검색 후 이메일 보내기
     @PostMapping("/{groupId}/invite")

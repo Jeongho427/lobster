@@ -46,8 +46,8 @@ public class User {
     @OneToOne(mappedBy = "calenderOwner")
     private Calender calender;
 
-    @OneToMany(mappedBy = "creator")
-    private List<Group> groups = new ArrayList<>();
+    @OneToOne(mappedBy = "creator")
+    private Group group;
 
     @OneToOne(mappedBy = "userId")
     private Member member;

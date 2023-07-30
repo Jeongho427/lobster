@@ -26,11 +26,9 @@ public class Group {
     @Column(name = "member_cnt")
     private int memberCnt;
 
-    /*@Column(name = "creator")
-    private Long creator;*/
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    //User table의 pk인 user_id를 참조하는 외래키
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "creator")
     private User creator;
 
     @OneToMany(mappedBy = "groupId")
