@@ -24,7 +24,7 @@ public class JwtProvider {
             .secretKeyFor(SignatureAlgorithm.HS256);
 
     //==토큰 생성 메소드==//
-    public String createToken(String userId, String userName) {
+    public String createToToken(String userId, String userName, Long uId) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + Duration.ofDays(1).toMillis()); // 만료기간 1일
 
@@ -35,6 +35,7 @@ public class JwtProvider {
                 .setExpiration(expiration) // 만료시간(exp)
                 .claim("userId", userId) // 유저 아이디 정보를 클레임에 저장
                 .claim("userName", userName) // 유저 이름 정보를 클레임에 저장
+                .claim("uId", uId) // 유저의 숫자 아이디 클레임에 저장
                 .signWith(key, SignatureAlgorithm.HS256) // 알고리즘, 시크릿 키
                 .compact();
     }
@@ -57,4 +58,9 @@ public class JwtProvider {
         return token;
     }
 
+    //==토큰으로부터 유저 아이디 추출 메소드==//
+    public String extractUIdFromToken(String token) {
+        Claims claims = parseJwtToken(token);
+        return claims.get("uId", String.class);
+    }
 }

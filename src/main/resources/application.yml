@@ -22,6 +22,7 @@ spring:
       mail.smtp.ssl.trust: smtp.naver.com
   jpa:
     hibernate:
+#      ddl-auto: create-drop
       ddl-auto: update
     show-sql: true
     properties:
