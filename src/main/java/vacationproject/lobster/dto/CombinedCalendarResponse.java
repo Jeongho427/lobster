@@ -12,6 +12,4 @@ public class CombinedCalendarResponse {
     public CombinedCalendarResponse(List<Calendar> combinedCalendars) {
         this.combinedCalendars = combinedCalendars;
     }
-
-    // Getter와 Setter 메서드 (필요 시 추가)
 }

@@ -71,14 +71,14 @@ public class GroupController {
                 .build();
     }
 
-    /*//Group 탈퇴
+    //Group 탈퇴
     @PostMapping("/api/groups/{id}/leave")
     public ResponseEntity<Void> leaveGroup(@PathVariable long groupId){
         groupService.leaveGroup(groupId);
 
         return ResponseEntity.ok()
                 .build();
-    }*/
+    }
 
     //그룹원 일정 다 모인 캘린더 보기
     @GetMapping("/api/groups/{id}/combined-calendar")
