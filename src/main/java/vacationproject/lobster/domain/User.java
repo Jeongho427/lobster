@@ -1,15 +1,11 @@
 package vacationproject.lobster.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = "user")
 @NoArgsConstructor
@@ -45,8 +41,8 @@ public class User {
     private String profile_img;
 
 
-    @OneToOne(mappedBy = "calenderOwner")
-    private Calender calender;
+    @OneToOne(mappedBy = "calendarOwner")
+    private Calendar calendar;
 
     // 애랑
     @OneToOne(mappedBy = "creator")

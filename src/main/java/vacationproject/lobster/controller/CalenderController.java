@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vacationproject.lobster.domain.Calender;
-import vacationproject.lobster.dto.AddCalenderRequest;
-import vacationproject.lobster.dto.CalenderResponse;
-import vacationproject.lobster.dto.UpdateCalenderRequest;
-import vacationproject.lobster.service.CalenderService;
+import vacationproject.lobster.domain.Calendar;
+import vacationproject.lobster.dto.AddCalendarRequest;
+import vacationproject.lobster.dto.CalendarResponse;
+import vacationproject.lobster.dto.UpdateCalendarRequest;
+import vacationproject.lobster.service.CalendarService;
 
 import java.util.List;
 
@@ -16,23 +16,23 @@ import java.util.List;
 @RestController
 public class CalenderController {
 
-    private final CalenderService calenderService;
+    private final CalendarService calendarService;
 
     //Calender 생성
     @PostMapping("/api/calenders")
-    public ResponseEntity<Calender> createCalender(@RequestBody AddCalenderRequest request) {
-        Calender savedCalender = calenderService.save(request);
+    public ResponseEntity<Calendar> createCalender(@RequestBody AddCalendarRequest request) {
+        Calendar savedCalendar = calendarService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedCalender);
+                .body(savedCalendar);
     }
 
     //Calender 전체 조회
     @GetMapping("/api/calenders")
-    public ResponseEntity<List<CalenderResponse>> findAllCalender() {
-        List<CalenderResponse> calenders = calenderService.findAll()
+    public ResponseEntity<List<CalendarResponse>> findAllCalender() {
+        List<CalendarResponse> calenders = calendarService.findAll()
                 .stream()
-                .map(CalenderResponse::new)
+                .map(CalendarResponse::new)
                 .toList();
 
         return ResponseEntity.ok()
@@ -41,17 +41,17 @@ public class CalenderController {
 
     //Calender id로 단건 조회
     @GetMapping("/api/calenders/{id}")
-    public ResponseEntity<CalenderResponse> findCalenderById(@PathVariable long id) {
-        Calender calender = calenderService.findById(id);
+    public ResponseEntity<CalendarResponse> findCalenderById(@PathVariable long id) {
+        Calendar calendar = calendarService.findById(id);
 
         return ResponseEntity.ok()
-                .body(new CalenderResponse(calender));
+                .body(new CalendarResponse(calendar));
     }
 
     //Calender id로 삭제
     @DeleteMapping("/api/calenders/{id}")
     public ResponseEntity<Void> deleteCalender(@PathVariable long id) {
-        calenderService.delete(id);
+        calendarService.delete(id);
 
         return ResponseEntity.ok()
                 .build();
@@ -59,12 +59,12 @@ public class CalenderController {
 
     //Calender 수정 => 일정 추가 및 수정
     @PutMapping("/api/calenders/{id}")
-    public ResponseEntity<Calender> updateArticle(@PathVariable long id,
-                                                  @RequestBody UpdateCalenderRequest request) {
-        Calender updatedCalender = calenderService.update(id, request);
+    public ResponseEntity<Calendar> updateArticle(@PathVariable long id,
+                                                  @RequestBody UpdateCalendarRequest request) {
+        Calendar updatedCalendar = calendarService.update(id, request);
 
         return ResponseEntity.ok()
-                .body(updatedCalender);
+                .body(updatedCalendar);
     }
 
 }

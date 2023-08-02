@@ -27,9 +27,6 @@ public class Group {
     @Column(name = "member_cnt")
     private int memberCnt;
 
-    /*@Column(name = "creator")
-    private Long creator;*/
-
     //유저 테이블의 user_id와 연결되어있는 creator
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "creator")

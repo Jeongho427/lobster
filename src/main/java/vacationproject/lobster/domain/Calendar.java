@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class Calender {
+public class Calendar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "calender_id")
+    @Column(name = "calendar_id")
     private Long cId;
 
     @Column(name = "day_start")
@@ -32,12 +32,9 @@ public class Calender {
     @Column(name = "contents")
     private String contents;
 
-    /*@Column(name = "calender_owner")
-    private Long calenderOwner;*/
-
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User calenderOwner;
+    private User calendarOwner;
 
     public void update(String day_start, String day_end, String time_start, String time_end, String contents) {
         this.day_start = day_start;
@@ -48,12 +45,12 @@ public class Calender {
     }
 
     @Builder
-    public Calender(String day_start, String day_end, String time_start, String time_end, String contents, User calenderOwner) {
+    public Calendar(String day_start, String day_end, String time_start, String time_end, String contents, User calendarOwner) {
         this.day_start = day_start;
         this.day_end = day_end;
         this.time_start = time_start;
         this.time_end = time_end;
         this.contents = contents;
-        this.calenderOwner = calenderOwner;
+        this.calendarOwner = calendarOwner;
     }
 }

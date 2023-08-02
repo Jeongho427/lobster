@@ -4,29 +4,29 @@ package vacationproject.lobster.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import vacationproject.lobster.domain.Calender;
+import vacationproject.lobster.domain.Calendar;
 import vacationproject.lobster.domain.User;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AddCalenderRequest {
+public class AddCalendarRequest {
 
     private String day_start;
     private String day_end;
     private String time_start;
     private String time_end;
     private String contents;
-    private User calenderOwner;
+    private User calendarOwner;
 
-    public Calender toEntity() {
-        return Calender.builder()
+    public Calendar toEntity() {
+        return Calendar.builder()
                 .day_start(day_start)
                 .day_end(day_end)
                 .time_start(time_start)
                 .time_end(time_end)
                 .contents(contents)
-                .calenderOwner(calenderOwner)
+                .calendarOwner(calendarOwner)
                 .build();
     }
 }
