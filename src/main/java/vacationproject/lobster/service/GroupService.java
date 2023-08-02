@@ -14,6 +14,7 @@ import vacationproject.lobster.repository.UserRepository;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class GroupService {
 
@@ -70,14 +71,17 @@ public class GroupService {
         if (group.getCreator().getUserId().equals(userId)) {
             for (Member member : members) {
                 memberRepository.deleteById(member.getMId());
+                groupRepository.decrementMemberCount(groupId);
             }
             groupRepository.deleteById(groupId);
         }
         else {
             // 그룹에서 해당 사용자 삭제
             for (Member member : members) { // Member 엔티티의 userId 필드에 있는 User 엔티티의 userId 필드를 비교
-                if (member.getGroupId().equals(groupId) && member.getUserId().equals(userId)) {
+                if (member.getGroupId().getGId().equals(groupId) && member.getUserId().getUId().equals(userId)) {
                     memberRepository.deleteById(member.getMId());
+                    // Group 엔티티의 멤버 수 감소 메서드 호출
+                    groupRepository.decrementMemberCount(groupId);
                     break;
                 }
             }
@@ -93,7 +97,6 @@ public class GroupService {
     }
 
     // 해당 그룹에 멤버 추가 기능
-    @Transactional
     public void addMemberToGroup(long groupId, String userId) {
         User user = userRepository.findByUserId(userId);
 
@@ -117,7 +120,6 @@ public class GroupService {
                 .build();
 
         memberRepository.save(member);
-
 
     }
 }

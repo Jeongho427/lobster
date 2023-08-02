@@ -8,6 +8,10 @@ import vacationproject.lobster.domain.Group;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     @Modifying
-    @Query("UPDATE Group g SET g.memberCnt = g.memberCnt + 1 WHERE g.id = :id")
+    @Query("UPDATE Group g SET g.memberCnt = g.memberCnt + 1 WHERE g.gId = :id")
     void incrementMemberCount(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE Group g SET g.memberCnt = g.memberCnt - 1 WHERE g.gId = :id")
+    void decrementMemberCount(@Param("id") Long id);
 }
