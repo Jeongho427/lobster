@@ -3,14 +3,18 @@ package vacationproject.lobster.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vacationproject.lobster.domain.Calendar;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddGroupRequest;
+import vacationproject.lobster.dto.CombinedCalendarResponse;
 import vacationproject.lobster.dto.UpdateGroupRequest;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 import vacationproject.lobster.repository.UserRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -94,6 +98,20 @@ public class GroupService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
         return group;
+    }
+
+    //그룹원들 달력 한 달력에 모아주기
+    public CombinedCalendarResponse getCombinedCalendarForGroup(long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + groupId));
+
+        // 그룹원들의 캘린더 일정 리스트를 가져옴
+        List<Calendar> combinedCalendars = new ArrayList<>();
+        for (Member member : group.getMembers()) {
+            combinedCalendars.add(member.getUserId().getCalendar());
+        }
+
+        return new CombinedCalendarResponse(combinedCalendars);
     }
 
     // 해당 그룹에 멤버 추가 기능
