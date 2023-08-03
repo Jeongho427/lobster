@@ -72,12 +72,10 @@ public class GroupController {
     }
 
     //Group 탈퇴
-    @PostMapping("/api/groups/{id}/leave")
-    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId){
-        groupService.leaveGroup(groupId);
-
-        return ResponseEntity.ok()
-                .build();
+    @PostMapping("/api/groups/{groupId}/leave")
+    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId, @RequestParam long userId) {
+        groupService.leaveGroup(groupId, userId);
+        return ResponseEntity.ok().build();
     }
 
     //그룹원 일정 다 모인 캘린더 보기

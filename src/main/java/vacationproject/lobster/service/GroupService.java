@@ -64,12 +64,9 @@ public class GroupService {
     }
 
     //Group 탈퇴
-    public void leaveGroup(Long groupId) {
+    public void leaveGroup(Long groupId, Long userId) {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid group ID."));
-
-        User creator = group.getCreator();
-        Long userId = creator.getUId();
 
         // 해당 그룹에 속한 모든 멤버 조회
         List<Member> members = group.getMembers();
