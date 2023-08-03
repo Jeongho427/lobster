@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "calender")
+@Table(name = "calendar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
