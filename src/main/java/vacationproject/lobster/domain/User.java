@@ -1,11 +1,15 @@
 package vacationproject.lobster.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "user")
 @NoArgsConstructor
@@ -41,19 +45,20 @@ public class User {
     private String profile_img;
 
 
-    @OneToOne(mappedBy = "calendarOwner")
-    @JsonBackReference
-    private Calendar calendar;
+    @OneToOne(mappedBy = "calenderOwner")
+    private Calender calender;
 
     // 애랑
     @OneToOne(mappedBy = "creator")
-
+//    @JsonBackReference
     private Group group;
 
     // 애가 각각 그룹과 멤버 테이블이랑 양방퍙 매핑이 되어있음.
     @OneToOne(mappedBy = "userId")
     @JsonBackReference
     private Member member;
+
+
 
     @Builder
     public User(String userId, String password, String userName, String email, String phoneNum) {

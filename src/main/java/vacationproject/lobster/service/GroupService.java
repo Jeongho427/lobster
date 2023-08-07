@@ -32,7 +32,7 @@ public class GroupService {
             return groupRepository.save(groupRequest.toEntity(creator));
         } else {
             // creator가 null인 경우에 대한 처리를 합니다. (필요하면 추가)
-            // creator가 null일 수 없음
+            // creator가 null일 수 없다고 가정
             throw new IllegalArgumentException("Creator not found.");
         }
     }
@@ -65,17 +65,14 @@ public class GroupService {
         if (group.getCreator().getUserId().equals(userId)) {
             for (Member member : members) {
                 memberRepository.deleteById(member.getMId());
-                groupRepository.decrementMemberCount(groupId);
             }
             groupRepository.deleteById(groupId);
         }
         else {
             // 그룹에서 해당 사용자 삭제
             for (Member member : members) { // Member 엔티티의 userId 필드에 있는 User 엔티티의 userId 필드를 비교
-                if (member.getGroupId().getGId().equals(groupId) && member.getUserId().getUId().equals(userId)) {
+                if (member.getGroupId().equals(groupId) && member.getUserId().equals(userId)) {
                     memberRepository.deleteById(member.getMId());
-                    // Group 엔티티의 멤버 수 감소 메서드 호출
-                    groupRepository.decrementMemberCount(groupId);
                     break;
                 }
             }

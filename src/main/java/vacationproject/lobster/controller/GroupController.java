@@ -71,12 +71,14 @@ public class GroupController {
                 .build();
     }
 
-    //Group 탈퇴
-    @PostMapping("/api/groups/{groupId}/leave")
-    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId, @RequestParam long userId) {
-        groupService.leaveGroup(groupId, userId);
-        return ResponseEntity.ok().build();
-    }
+    /*//Group 탈퇴
+    @PostMapping("/api/groups/{id}/leave")
+    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId){
+        groupService.leaveGroup(groupId);
+
+        return ResponseEntity.ok()
+                .build();
+    }*/
 
 
     // 그룹 초대 기능

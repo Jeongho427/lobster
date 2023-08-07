@@ -13,7 +13,6 @@ import vacationproject.lobster.repository.MemberRepository;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class MemberService {
 
