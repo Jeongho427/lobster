@@ -4,23 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
-import vacationproject.lobster.dto.AddGroupRequest;
-import vacationproject.lobster.dto.CombinedCalendarResponse;
-import vacationproject.lobster.dto.GroupResponse;
-import vacationproject.lobster.dto.UpdateGroupRequest;
+import vacationproject.lobster.dto.group.AddGroupRequest;
+import vacationproject.lobster.dto.group.CombinedCalendarResponse;
+import vacationproject.lobster.dto.group.GroupResponse;
+import vacationproject.lobster.dto.group.UpdateGroupRequest;
 import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.GroupService;
 import vacationproject.lobster.service.InvitationService;
 import vacationproject.lobster.service.MailSenderService;
 
-import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -143,7 +142,6 @@ public class GroupController {
         response.put("error", "Invalid or expired invitation link.");
         return response;
     }
-
 
     // 그룹 수정
     @PutMapping("/api/groups/{id}")

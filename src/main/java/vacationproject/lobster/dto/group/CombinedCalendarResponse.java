@@ -1,4 +1,4 @@
-package vacationproject.lobster.dto;
+package vacationproject.lobster.dto.group;
 
 import vacationproject.lobster.domain.Calender;
 
@@ -11,5 +11,5 @@ public class CombinedCalendarResponse {
         this.combinedCalendars = combinedCalendars;
     }
 
-    // Getter와 Setter 메서드 (필요 시 추가)
+    // Getter와 Setter 메서드 필요 시 추가
 }

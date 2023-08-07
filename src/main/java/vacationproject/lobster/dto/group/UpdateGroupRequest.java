@@ -1,4 +1,4 @@
-package vacationproject.lobster.dto;
+package vacationproject.lobster.dto.group;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

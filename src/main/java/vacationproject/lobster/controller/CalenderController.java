@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vacationproject.lobster.domain.Calender;
-import vacationproject.lobster.dto.AddCalenderRequest;
-import vacationproject.lobster.dto.CalenderResponse;
-import vacationproject.lobster.dto.UpdateCalenderRequest;
+import vacationproject.lobster.dto.calender.AddCalenderRequest;
+import vacationproject.lobster.dto.calender.CalenderResponse;
+import vacationproject.lobster.dto.calender.UpdateCalenderRequest;
 import vacationproject.lobster.service.CalenderService;
 
 import java.util.List;

@@ -2,11 +2,9 @@ package vacationproject.lobster.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
-import vacationproject.lobster.dto.AddMemberRequest;
-import vacationproject.lobster.dto.UpdateMemberRequest;
+import vacationproject.lobster.dto.member.AddMemberRequest;
+import vacationproject.lobster.dto.member.UpdateMemberRequest;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 

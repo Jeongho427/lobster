@@ -32,9 +32,6 @@ public class Calender {
     @Column(name = "contents")
     private String contents;
 
-    /*@Column(name = "calender_owner")
-    private Long calenderOwner;*/
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User calenderOwner;

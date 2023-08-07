@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vacationproject.lobster.domain.Calender;
-import vacationproject.lobster.dto.AddCalenderRequest;
-import vacationproject.lobster.dto.UpdateCalenderRequest;
+import vacationproject.lobster.dto.calender.AddCalenderRequest;
+import vacationproject.lobster.dto.calender.UpdateCalenderRequest;
 import vacationproject.lobster.repository.CalenderRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional

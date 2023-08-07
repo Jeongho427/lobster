@@ -1,4 +1,4 @@
-package vacationproject.lobster.dto;
+package vacationproject.lobster.dto.group;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
