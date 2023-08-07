@@ -4,12 +4,13 @@ package vacationproject.lobster.dto.calender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.User;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Getter @Setter
 public class AddCalenderRequest {
 
     private String day_start;
