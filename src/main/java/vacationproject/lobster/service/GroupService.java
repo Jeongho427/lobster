@@ -3,14 +3,18 @@ package vacationproject.lobster.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddGroupRequest;
+import vacationproject.lobster.dto.CombinedCalendarResponse;
 import vacationproject.lobster.dto.UpdateGroupRequest;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 import vacationproject.lobster.repository.UserRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -65,18 +69,35 @@ public class GroupService {
         if (group.getCreator().getUserId().equals(userId)) {
             for (Member member : members) {
                 memberRepository.deleteById(member.getMId());
+                groupRepository.decrementMemberCount(groupId);
             }
             groupRepository.deleteById(groupId);
         }
         else {
             // 그룹에서 해당 사용자 삭제
             for (Member member : members) { // Member 엔티티의 userId 필드에 있는 User 엔티티의 userId 필드를 비교
-                if (member.getGroupId().equals(groupId) && member.getUserId().equals(userId)) {
+                if (member.getGroupId().getGId().equals(groupId) && member.getUserId().getUId().equals(userId)) {
                     memberRepository.deleteById(member.getMId());
+                    // Group 엔티티의 멤버 수 감소 메서드 호출
+                    groupRepository.decrementMemberCount(groupId);
                     break;
                 }
             }
         }
+    }
+
+    //그룹원들 달력 한 달력에 모아주기
+    public CombinedCalendarResponse getCombinedCalendarForGroup(long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + groupId));
+
+        // 그룹원들의 캘린더 일정 리스트를 가져옴
+        List<Calender> combinedCalendars = new ArrayList<>();
+        for (Member member : group.getMembers()) {
+            combinedCalendars.add(member.getUserId().getCalender());
+        }
+
+        return new CombinedCalendarResponse(combinedCalendars);
     }
 
     //Group 수정 (이름만 수정 가능) 멤버 수는 자동으로 갱신되게, 그룹 생성자는 안바뀌게
