@@ -43,8 +43,7 @@ public class CalendarService {
         Calendar calendar = calendarRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
-        calendar.update(request.getDayStart(), request.getDayEnd(), request.getTimeStart(), request.getTimeEnd(),
-                request.getContents());
+        calendar.update(request.getDayStart(), request.getDayEnd(), request.getContents());
 
         return calendar;
     }

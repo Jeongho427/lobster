@@ -19,8 +19,8 @@ public class CalenderController {
     private final CalendarService calendarService;
 
     //Calender 생성
-    @PostMapping("/api/calenders")
-    public ResponseEntity<Calendar> createCalender(@RequestBody AddCalendarRequest request) {
+    @PostMapping("/api/calendars")
+    public ResponseEntity<Calendar> createCalendar(@RequestBody AddCalendarRequest request) {
         Calendar savedCalendar = calendarService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -28,20 +28,20 @@ public class CalenderController {
     }
 
     //Calender 전체 조회
-    @GetMapping("/api/calenders")
-    public ResponseEntity<List<CalendarResponse>> findAllCalender() {
-        List<CalendarResponse> calenders = calendarService.findAll()
+    @GetMapping("/api/calendars")
+    public ResponseEntity<List<CalendarResponse>> findAllCalendar() {
+        List<CalendarResponse> calendars = calendarService.findAll()
                 .stream()
                 .map(CalendarResponse::new)
                 .toList();
 
         return ResponseEntity.ok()
-                .body(calenders);
+                .body(calendars);
     }
 
     //Calender id로 단건 조회
-    @GetMapping("/api/calenders/{id}")
-    public ResponseEntity<CalendarResponse> findCalenderById(@PathVariable long id) {
+    @GetMapping("/api/calendars/{id}")
+    public ResponseEntity<CalendarResponse> findCalendarById(@PathVariable long id) {
         Calendar calendar = calendarService.findById(id);
 
         return ResponseEntity.ok()
@@ -49,7 +49,7 @@ public class CalenderController {
     }
 
     //Calender id로 삭제
-    @DeleteMapping("/api/calenders/{id}")
+    @DeleteMapping("/api/calendars/{id}")
     public ResponseEntity<Void> deleteCalender(@PathVariable long id) {
         calendarService.delete(id);
 
@@ -58,7 +58,7 @@ public class CalenderController {
     }
 
     //Calender 수정 => 일정 추가 및 수정
-    @PutMapping("/api/calenders/{id}")
+    @PostMapping("/api/calendars/{id}")
     public ResponseEntity<Calendar> updateArticle(@PathVariable long id,
                                                   @RequestBody UpdateCalendarRequest request) {
         Calendar updatedCalendar = calendarService.update(id, request);

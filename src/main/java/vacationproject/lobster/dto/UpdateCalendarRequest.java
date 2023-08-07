@@ -10,7 +10,5 @@ import lombok.NoArgsConstructor;
 public class UpdateCalendarRequest {
     private String dayStart;
     private String dayEnd;
-    private String timeStart;
-    private String timeEnd;
     private String contents;
 }

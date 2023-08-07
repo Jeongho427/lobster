@@ -8,7 +8,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.AddGroupRequest;
-import vacationproject.lobster.dto.CombinedCalendarResponse;
 import vacationproject.lobster.dto.GroupResponse;
 import vacationproject.lobster.dto.UpdateGroupRequest;
 import vacationproject.lobster.repository.UserRepository;
@@ -35,7 +34,8 @@ public class GroupController {
     //Group 생성
     @PostMapping("/api/groups")
     public ResponseEntity<Group> createGroup(@RequestBody AddGroupRequest request) {
-        Group savedGroup = groupService.save(request);
+        User creator = userRepository.findByUserId(request.getCreator().getUserId());
+        Group savedGroup = groupService.save(request, creator);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedGroup);
@@ -78,13 +78,6 @@ public class GroupController {
         return ResponseEntity.ok().build();
     }
 
-    //그룹원 일정 다 모인 캘린더 보기
-    @GetMapping("/api/groups/{id}/combined-calendar")
-    public ResponseEntity<CombinedCalendarResponse> getCombinedCalendarForGroup(@PathVariable long id) {
-        CombinedCalendarResponse combinedCalendar = groupService.getCombinedCalendarForGroup(id);
-
-        return ResponseEntity.ok(combinedCalendar);
-    }
 
     // 그룹 초대 기능
     @PostMapping("/api/invite/{groupId}") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.

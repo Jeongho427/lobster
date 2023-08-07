@@ -30,7 +30,7 @@ public class Group {
     //유저 테이블의 user_id와 연결되어있는 creator
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "creator")
-    @JsonManagedReference
+
     private User creator;
 
     // 멤버 테이블의 모든 정보 불러오기

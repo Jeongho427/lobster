@@ -7,8 +7,8 @@ import vacationproject.lobster.domain.User;
 @Getter
 public class GroupResponse {
 
-    private final String groupName;
-    private final int memberCnt;
+    private String groupName;
+    private int memberCnt;
     private User creator;
 
     public GroupResponse(Group group) {

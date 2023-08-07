@@ -1,5 +1,7 @@
 package vacationproject.lobster.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +16,10 @@ public class AddGroupRequest {
 
     private String groupName;
     private int memberCnt;
+    @JsonBackReference
     private User creator;
 
-    public Group toEntity() {
+    public Group toEntity(User creator) {
         return Group.builder()
                 .groupName(groupName)
                 .memberCnt(memberCnt)
