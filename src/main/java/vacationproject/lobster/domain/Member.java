@@ -27,7 +27,6 @@ public class Member {
     // 유저 테이블의 user_id와 연결되어있음
     @OneToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
     private User userId;
 
     @Column(name = "color")

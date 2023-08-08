@@ -16,7 +16,6 @@ public class AddGroupRequest {
 
     private String groupName;
     private int memberCnt;
-    @JsonBackReference
     private User creator;
 
     public Group toEntity(User creator) {
