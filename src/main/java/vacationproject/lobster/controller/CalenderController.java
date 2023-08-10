@@ -22,9 +22,10 @@ public class CalenderController {
     private final JwtProvider jwtProvider;
 
     // 일정 생성
-    @PostMapping("/api/calenders")
-    public ResponseEntity<Calender> createCalender(@RequestHeader HttpHeaders headers,
-                                                   @RequestBody AddCalenderRequest request) {
+    @PostMapping("/api/calenders/{userId}")
+    public ResponseEntity<Calender> createEvent(@PathVariable long userId,
+                                                @RequestHeader HttpHeaders headers,
+                                                @RequestBody AddCalenderRequest request) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
 
@@ -48,7 +49,7 @@ public class CalenderController {
 
     // 일정 삭제
     @DeleteMapping("/api/calenders/{userId}/{calenderId}")
-    public ResponseEntity<Void> deleteCalender(@RequestHeader HttpHeaders auth,
+    public ResponseEntity<Void> deleteEvent(@RequestHeader HttpHeaders auth,
                                                @PathVariable long calenderId) {
         calenderService.delete(calenderId);
 
