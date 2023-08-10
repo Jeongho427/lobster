@@ -1,5 +1,6 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,10 +38,11 @@ public class User {
     private boolean is_login;
 
     @Column(name = "profile_img")
-    private String profile_img;
+    private Byte profile_img;
 
 
     @OneToOne(mappedBy = "calenderOwner")
+    @JsonBackReference
     private Calender calender;
 
     @OneToOne(mappedBy = "creator")

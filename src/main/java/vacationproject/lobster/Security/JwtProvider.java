@@ -51,7 +51,7 @@ public class JwtProvider {
     }
 
     //==토큰 앞 부분('Bearer') 제거 메소드==//
-    private String BearerRemove(String token) {
+    public String BearerRemove(String token) {
         if (token.startsWith("Bearer ")) {
             return token.substring("Bearer ".length());
         }
@@ -59,8 +59,8 @@ public class JwtProvider {
     }
 
     //==토큰으로부터 유저 아이디 추출 메소드==//
-    public String extractUIdFromToken(String token) {
+    public Long extractUIdFromToken(String token) {
         Claims claims = parseJwtToken(token);
-        return claims.get("uId", String.class);
+        return claims.get("uId", Long.class);
     }
 }

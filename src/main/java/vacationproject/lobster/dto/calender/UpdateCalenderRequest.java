@@ -10,10 +10,9 @@ import vacationproject.lobster.domain.User;
 @AllArgsConstructor
 @Getter @Setter
 public class UpdateCalenderRequest {
-    private String dayStart;
-    private String dayEnd;
-    private String timeStart;
-    private String timeEnd;
+    private String day_start;
+    private String day_end;
     private String contents;
+    private boolean important;
     private User calenderOwner;
 }

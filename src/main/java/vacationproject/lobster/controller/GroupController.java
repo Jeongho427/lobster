@@ -1,6 +1,7 @@
 package vacationproject.lobster.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +34,10 @@ public class GroupController {
 
     //Group 생성
     @PostMapping("/api/groups")
-    public ResponseEntity<Group> createGroup(@RequestBody AddGroupRequest request) {
+    public ResponseEntity<Group> createGroup(@RequestHeader HttpHeaders auth,
+                                             @RequestBody AddGroupRequest request) {
         User creator = userRepository.findByUserId(request.getCreator().getUserId());
-        Group savedGroup = groupService.save(request, creator);
+        Group savedGroup = groupService.save(request, creator); 
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedGroup);
@@ -55,7 +57,8 @@ public class GroupController {
 
     //Group id로 단건 조회
     @GetMapping("/api/groups/{id}")
-    public ResponseEntity<GroupResponse> findGroupById(@PathVariable long id) {
+    public ResponseEntity<GroupResponse> findGroupById(@RequestHeader HttpHeaders auth,
+                                                       @PathVariable long id) {
         Group group = groupService.findById(id);
 
         return ResponseEntity.ok()
@@ -64,7 +67,8 @@ public class GroupController {
 
     //Group 삭제
     @DeleteMapping("/api/groups/{id}")
-    public ResponseEntity<Void> deleteGroup(@PathVariable long id) {
+    public ResponseEntity<Void> deleteGroup(@RequestHeader HttpHeaders auth,
+                                            @PathVariable long id) {
         groupService.delete(id);
 
         return ResponseEntity.ok()
@@ -73,14 +77,17 @@ public class GroupController {
 
     //Group 탈퇴
     @PostMapping("/api/groups/{groupId}/leave")
-    public ResponseEntity<Void> leaveGroup(@PathVariable long groupId, @RequestParam long userId) {
+    public ResponseEntity<Void> leaveGroup(@RequestHeader HttpHeaders auth,
+                                           @PathVariable long groupId,
+                                           @RequestParam long userId) {
         groupService.leaveGroup(groupId, userId);
         return ResponseEntity.ok().build();
     }
 
     //그룹원 일정 다 모인 캘린더 보기
     @GetMapping("/api/groups/{id}/combined-calendar")
-    public ResponseEntity<CombinedCalendarResponse> getCombinedCalendarForGroup(@PathVariable long id) {
+    public ResponseEntity<CombinedCalendarResponse> getCombinedCalendarForGroup(@RequestHeader HttpHeaders auth,
+                                                                                @PathVariable long id) {
         CombinedCalendarResponse combinedCalendar = groupService.getCombinedCalendarForGroup(id);
 
         return ResponseEntity.ok(combinedCalendar);
@@ -88,7 +95,9 @@ public class GroupController {
 
     // 그룹 초대 기능
     @PostMapping("/api/invite/{groupId}") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.
-    public String inviteUser(@PathVariable long groupId, @RequestBody Map<String, String> request) {
+    public String inviteUser(@RequestHeader HttpHeaders auth,
+                             @PathVariable long groupId,
+                             @RequestBody Map<String, String> request) {
         String userId = request.get("userId");
 
         User user = userRepository.findByUserId(userId);
@@ -145,7 +154,8 @@ public class GroupController {
 
     // 그룹 수정
     @PutMapping("/api/groups/{id}")
-    public ResponseEntity<Group> updateArticle(@PathVariable long id,
+    public ResponseEntity<Group> updateArticle(@RequestHeader HttpHeaders auth,
+                                               @PathVariable long id,
                                                @RequestBody UpdateGroupRequest request) {
         Group updatedGroup = groupService.update(id, request);
 
