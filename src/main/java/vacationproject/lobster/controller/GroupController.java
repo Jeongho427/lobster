@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.group.AddGroupRequest;
@@ -31,13 +32,16 @@ public class GroupController {
     private final UserRepository userRepository;
     private final InvitationService invitationService;
     private final MailSenderService mailSenderService;
+    private final JwtProvider jwtProvider;
 
     //Group 생성
-    @PostMapping("/api/groups")
-    public ResponseEntity<Group> createGroup(@RequestHeader HttpHeaders auth,
+    @PostMapping("/api/groups/{userId}")
+    public ResponseEntity<Group> createGroup(@PathVariable long userId,
+                                             @RequestHeader HttpHeaders headers,
                                              @RequestBody AddGroupRequest request) {
-        User creator = userRepository.findByUserId(request.getCreator().getUserId());
-        Group savedGroup = groupService.save(request, creator); 
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+        Group savedGroup = groupService.save(request, uId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedGroup);

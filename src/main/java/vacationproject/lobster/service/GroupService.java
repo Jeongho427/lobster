@@ -27,7 +27,8 @@ public class GroupService {
 
 
     // Group 등록
-    public Group save(AddGroupRequest groupRequest, User creator) {
+    public Group save(AddGroupRequest groupRequest, Long uId) {
+        User creator = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
         // memberCnt를 1로 설정
         groupRequest.setMemberCnt(1);
 
@@ -92,12 +93,12 @@ public class GroupService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + groupId));
 
         // 그룹원들의 캘린더 일정 리스트를 가져옴
-        List<Calender> combinedCalendars = new ArrayList<>();
+        List<Calender> combinedCalenders = new ArrayList<>();
         for (Member member : group.getMembers()) {
-            combinedCalendars.add(member.getUserId().getCalender());
+            combinedCalenders.addAll(member.getUserId().getCalenders());
         }
 
-        return new CombinedCalendarResponse(combinedCalendars);
+        return new CombinedCalendarResponse(combinedCalenders);
     }
 
     //Group 수정 (이름만 수정 가능) 멤버 수는 자동으로 갱신되게, 그룹 생성자는 안바뀌게

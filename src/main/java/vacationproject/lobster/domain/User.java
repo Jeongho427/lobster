@@ -1,16 +1,19 @@
 package vacationproject.lobster.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "user")
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @Entity
 public class User {
 
@@ -37,16 +40,17 @@ public class User {
     @Column(name = "is_login")
     private boolean is_login;
 
-    @Column(name = "profile_img")
-    private Byte profile_img;
+    @Column(name = "profile_img", columnDefinition="BLOB")
+    @Lob
+    private byte[] profileImg;
 
+    @OneToMany(mappedBy = "calenderOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Calender> calenders = new ArrayList<>();
 
-    @OneToOne(mappedBy = "calenderOwner")
-    @JsonBackReference
-    private Calender calender;
-
-    @OneToOne(mappedBy = "creator")
-    private Group group;
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Group> groups = new ArrayList<>();
 
     @OneToOne(mappedBy = "userId")
     private Member member;

@@ -1,5 +1,6 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,9 +31,9 @@ public class Calender {
     @Column(name = "important")
     private boolean important;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User calenderOwner;
 
     public void update(String day_start, String day_end, String contents) {

@@ -1,5 +1,6 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -28,8 +29,9 @@ public class Group {
     private int memberCnt;
 
     //유저 테이블의 user_id와 연결되어있는 creator
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "creator")
+    @JsonBackReference
     private User creator;
 
     // 멤버 테이블의 모든 정보 불러오기

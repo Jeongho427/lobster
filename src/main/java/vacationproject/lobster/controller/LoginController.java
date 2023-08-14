@@ -1,12 +1,15 @@
 package vacationproject.lobster.controller;
 
 import io.jsonwebtoken.Claims;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.LoginRequest;
@@ -15,6 +18,9 @@ import vacationproject.lobster.dto.TokenDataResponse;
 import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.MailSenderService;
 import vacationproject.lobster.service.UserService;
+
+import java.util.Arrays;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api")
@@ -26,8 +32,6 @@ public class LoginController {
     private final MailSenderService mailSenderService;
     private final JwtProvider jwtProvider;
     private final TokenDataResponse tokenDataResponse;
-
-
 
     public LoginController(
             UserService userService,
@@ -61,7 +65,7 @@ public class LoginController {
         }
     }
 
-    //==토큰 인증 컨트롤러==//
+    //==토큰 인증 컨트롤러==// + 프로필 이미지 체크
     @GetMapping(value = "/checkToken")
     public ResponseEntity<TokenDataResponse> checkToken(@RequestHeader(value = "Authorization") String token) {
         try {
@@ -77,7 +81,12 @@ public class LoginController {
                 // 토큰이 유효한 경우 클라이언트에게 토큰 데이터를 응답
                 String userId = claims.get("userId", String.class);
                 String userName = claims.get("userName", String.class);
-                TokenDataResponse tokenData = new TokenDataResponse(parsedToken, userId, userName, claims.getIssuedAt().toString(), claims.getExpiration().toString());
+                Long uId = claims.get("uId", Long.class);
+
+                boolean isProfileNull = userService.isProfileImageNull(uId);
+
+                TokenDataResponse tokenData = new TokenDataResponse(parsedToken, userId, userName, claims.getIssuedAt().toString(), claims.getExpiration().toString(), isProfileNull);
+
                 return ResponseEntity.ok(tokenData);
             } else {
                 // 토큰이 유효하지 않은 경우 클라이언트에게 에러 응답
@@ -87,6 +96,58 @@ public class LoginController {
             // 토큰 파싱 또는 검증에 문제가 있는 경우 클라이언트에게 에러 응답
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+    }
+
+    // 프로필 입력하기
+    @PostMapping("/upload-profile-image")
+    public ResponseEntity<String> uploadProfileImage(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestPart("image") MultipartFile image
+    ) {
+        try {
+            String parsedToken = token.substring("Bearer ".length());
+
+            Long uIdFromToken = jwtProvider.extractUIdFromToken(parsedToken);
+            System.out.println("User ID from token: " + uIdFromToken);
+
+            // 이미지가 잘 전달되었는지 확인하기 위해 이미지의 이름과 크기를 출력
+            System.out.println("Received image: " + image.getOriginalFilename());
+            System.out.println("Image size: " + image.getSize() + " bytes");
+            System.out.println(parsedToken);
+
+            System.out.println("전");
+
+//         이미지를 byte 배열로 변환하여 해당 사용자의 profileImage 필드에 저장
+            byte[] imageBytes = image.getBytes();
+
+            System.out.println("받긴함");
+
+            // 사용자 정보를 가져와서 profileImage 필드에 이미지 저장
+            User user = userRepository.findById(uIdFromToken).orElseThrow(() -> new RuntimeException("User not found"));
+            user.setProfileImg(imageBytes);
+            userRepository.save(user); // 변경된 사용자 정보 저장
+
+            return ResponseEntity.ok("Image received successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error receiving image");
+        }
+    }
+
+    // 이미지 불러오기
+    @GetMapping("/profile-image")
+    public ResponseEntity<byte[]> loadImage(@RequestHeader(value = "Authorization") String token) {
+        String parsedToken = token.substring("Bearer ".length());
+        Long uIdFromToken = jwtProvider.extractUIdFromToken(parsedToken);
+
+        byte[] imageBytes = userService.getProfileImageBytes(uIdFromToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG); // 이미지 타입에 맞게 설정4
+
+        System.out.println("잘갔어");
+
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
     // 로그인 계정 확인
@@ -117,6 +178,7 @@ public class LoginController {
         return user != null && user.getEmail().equals(email);
     }
 
+    // 새로운 비밀번호 정하기
     @PostMapping("/newPassword")
     public ResponseEntity<String> newPassword(@RequestBody NewPasswordRequest request) {
         String userId = request.getUserId();
