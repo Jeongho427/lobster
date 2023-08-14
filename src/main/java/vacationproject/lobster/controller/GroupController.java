@@ -80,7 +80,7 @@ public class GroupController {
     }
 
     //Group 탈퇴
-    @PostMapping("/api/groups/{groupId}/leave")
+    @DeleteMapping("/api/groups/{groupId}/leave")
     public ResponseEntity<Void> leaveGroup(@RequestHeader HttpHeaders auth,
                                            @PathVariable long groupId,
                                            @RequestParam long userId) {
@@ -89,10 +89,10 @@ public class GroupController {
     }
 
     //그룹원 일정 다 모인 캘린더 보기
-    @GetMapping("/api/groups/{id}/combined-calendar")
+    @GetMapping("/api/groups/{userId}/combined-calendar")
     public ResponseEntity<CombinedCalendarResponse> getCombinedCalendarForGroup(@RequestHeader HttpHeaders auth,
-                                                                                @PathVariable long id) {
-        CombinedCalendarResponse combinedCalendar = groupService.getCombinedCalendarForGroup(id);
+                                                                                @PathVariable long userId) {
+        CombinedCalendarResponse combinedCalendar = groupService.getCombinedCalendarForGroup(userId);
 
         return ResponseEntity.ok(combinedCalendar);
     }

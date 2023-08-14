@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vacationproject.lobster.domain.User;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
 public class UpdateCalenderRequest {
-    private String day_start;
-    private String day_end;
+    private Date day_start;
+    private Date day_end;
     private String contents;
     private boolean important;
     private User calenderOwner;

@@ -7,13 +7,15 @@ import lombok.Setter;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.User;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
 public class AddCalenderRequest {
 
-    private String day_start;
-    private String day_end;
+    private Date day_start;
+    private Date day_end;
     private String contents;
     private boolean important;
     private User calenderOwner;

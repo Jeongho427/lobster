@@ -4,10 +4,12 @@ import lombok.Getter;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.User;
 
+import java.util.Date;
+
 @Getter
 public class CalenderResponse {
-    private String day_start;
-    private String day_end;
+    private Date day_start;
+    private Date day_end;
     private String contents;
     private boolean important;
     private User calenderOwner;
