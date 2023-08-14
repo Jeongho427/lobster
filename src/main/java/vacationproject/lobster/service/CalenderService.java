@@ -7,10 +7,15 @@ import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.calender.AddCalenderRequest;
+import vacationproject.lobster.dto.calender.CalenderResponse;
 import vacationproject.lobster.dto.calender.UpdateCalenderRequest;
 import vacationproject.lobster.repository.CalenderRepository;
 import vacationproject.lobster.repository.UserRepository;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,19 +36,40 @@ public class CalenderService {
     }
 
     // CalenderOwner id로 해당 사용자의 일정들 가져오기
-    public List<Calender> findUserCalenders(Long userId) {
-        return calenderRepository.findByCalenderOwnerId(userId);
+    public List<Calender> findUserCalenders(Long uId) {
+        return calenderRepository.findByCalenderOwnerId(uId);
     }
 
+    // 특정 달 및 앞뒤 3달치 일정 가져오기
+    public List<CalenderResponse> getCalendersForMonth(Long userId, int year, int month) {
+        List<Calender> calenders = calenderRepository.findByCalenderOwnerId(userId);
+
+        YearMonth targetMonth = YearMonth.of(year, month);
+
+        LocalDate startDate = targetMonth.atDay(1).minusMonths(1); // 앞 달의 시작일
+        LocalDate endDate = targetMonth.atEndOfMonth().plusMonths(1); // 뒷 달의 마지막일
+
+        List<CalenderResponse> calendersForMonth = new ArrayList<>();
+        for (Calender calender : calenders) {
+            LocalDate calenderDate = calender.getDay_start().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (!calenderDate.isBefore(startDate) && !calenderDate.isAfter(endDate)) {
+                calendersForMonth.add(new CalenderResponse(calender));
+            }
+        }
+
+        return calendersForMonth;
+    }
+
+
     // 일정 조회
-    public Calender findById(Long id) {
-        return calenderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+    public Calender findById(Long calenderId) {
+        return calenderRepository.findById(calenderId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + calenderId));
     }
 
     // 일정 삭제
-    public void delete(Long id) {
-        calenderRepository.deleteById(id);
+    public void delete(Long calenderId) {
+        calenderRepository.deleteById(calenderId);
     }
 
     // 일정 수정

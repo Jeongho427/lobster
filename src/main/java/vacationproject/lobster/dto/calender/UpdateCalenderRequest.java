@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter @Setter
 public class UpdateCalenderRequest {
+    private Long cId;
     private Date day_start;
     private Date day_end;
     private String contents;
