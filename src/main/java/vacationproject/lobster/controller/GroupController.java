@@ -60,20 +60,20 @@ public class GroupController {
     }
 
     //Group id로 단건 조회
-    @GetMapping("/api/groups/{id}")
+    @GetMapping("/api/groups/{groupId}")
     public ResponseEntity<GroupResponse> findGroupById(@RequestHeader HttpHeaders auth,
-                                                       @PathVariable long id) {
-        Group group = groupService.findById(id);
+                                                       @PathVariable long groupId) {
+        Group group = groupService.findById(groupId);
 
         return ResponseEntity.ok()
                 .body(new GroupResponse(group));
     }
 
     //Group 삭제
-    @DeleteMapping("/api/groups/{id}")
+    @DeleteMapping("/api/groups/{groupId}")
     public ResponseEntity<Void> deleteGroup(@RequestHeader HttpHeaders auth,
-                                            @PathVariable long id) {
-        groupService.delete(id);
+                                            @PathVariable long groupId) {
+        groupService.delete(groupId);
 
         return ResponseEntity.ok()
                 .build();

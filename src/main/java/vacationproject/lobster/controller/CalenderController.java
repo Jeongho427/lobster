@@ -7,10 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Calender;
-import vacationproject.lobster.dto.calender.AddCalenderRequest;
-import vacationproject.lobster.dto.calender.CalenderMonthRequest;
-import vacationproject.lobster.dto.calender.CalenderResponse;
-import vacationproject.lobster.dto.calender.UpdateCalenderRequest;
+import vacationproject.lobster.domain.User;
+import vacationproject.lobster.dto.calender.*;
+import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.CalenderService;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.List;
 @RestController
 public class CalenderController {
 
+    private final UserRepository userRepository;
     private final CalenderService calenderService;
     private final JwtProvider jwtProvider;
 
@@ -50,18 +50,25 @@ public class CalenderController {
                 .body(userCalenders);
     }*/
 
-    // 특정 달 및 앞뒤 3달치 일정 가져오기
+    // 내 달력 페이지 사실상 메인 페이지(특정 달 및 앞뒤 3달치 일정 가져오기, 사용자 이름, 일정들, 그룹목록 가져오기)
     @GetMapping("/api/calenders")
-    public ResponseEntity<List<CalenderResponse>> getCalendersForMonth(@RequestHeader HttpHeaders headers,
-                                                                       @RequestBody CalenderMonthRequest calenderMonthRequest) {
+    public ResponseEntity<ExtendedCalenderResponse> getCalendersForMonth(@RequestHeader HttpHeaders headers,
+                                                                         @RequestParam int year,
+                                                                         @RequestParam int month) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
 
-        List<CalenderResponse> calendersForMonth = calenderService.getCalendersForMonth(uId,
-                calenderMonthRequest.getYear(), calenderMonthRequest.getMonth());
+        User user = userRepository.findById(uId).orElseThrow(()-> new IllegalArgumentException("user not found")); // 이에 대한 UserService를 생성해야 합니다.
+
+        List<CalenderResponse> calendersForMonth = calenderService.getCalendersForMonth(uId, year, month);
+
+        ExtendedCalenderResponse extendedResponse = new ExtendedCalenderResponse();
+        extendedResponse.setUserName(user.getUserName());
+        extendedResponse.setGroups(user.getGroups());
+        extendedResponse.setCalenders(calendersForMonth);
 
         return ResponseEntity.ok()
-                .body(calendersForMonth);
+                .body(extendedResponse);
     }
 
     // 일정 삭제

@@ -13,9 +13,11 @@ import vacationproject.lobster.repository.CalenderRepository;
 import vacationproject.lobster.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +33,10 @@ public class CalenderService {
     public Calender save(AddCalenderRequest calenderRequest, Long uId) {
         User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
-        Calender newCalender = calenderRequest.toEntity(user);
+        Date startDateTime = calenderRequest.getDay_start();
+        Date endDateTime = calenderRequest.getDay_end();
+
+        Calender newCalender = new Calender(startDateTime, endDateTime, calenderRequest.getContents(), calenderRequest.isImportant(), user);
         return calenderRepository.save(newCalender);
     }
 
@@ -41,8 +46,8 @@ public class CalenderService {
     }
 
     // 특정 달 및 앞뒤 3달치 일정 가져오기
-    public List<CalenderResponse> getCalendersForMonth(Long userId, int year, int month) {
-        List<Calender> calenders = calenderRepository.findByCalenderOwnerId(userId);
+    public List<CalenderResponse> getCalendersForMonth(Long uId, int year, int month) {
+        List<Calender> calenders = calenderRepository.findByCalenderOwnerId(uId);
 
         YearMonth targetMonth = YearMonth.of(year, month);
 
@@ -51,14 +56,20 @@ public class CalenderService {
 
         List<CalenderResponse> calendersForMonth = new ArrayList<>();
         for (Calender calender : calenders) {
-            LocalDate calenderDate = calender.getDay_start().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            if (!calenderDate.isBefore(startDate) && !calenderDate.isAfter(endDate)) {
+            LocalDateTime calenderStartDateTime = calender.getDay_start().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime calenderEndDateTime = calender.getDay_end().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            if (!calenderStartDateTime.toLocalDate().isBefore(startDate) && !calenderStartDateTime.toLocalDate().isAfter(endDate)) {
+                calendersForMonth.add(new CalenderResponse(calender));
+            } else if (!calenderEndDateTime.toLocalDate().isBefore(startDate) && !calenderEndDateTime.toLocalDate().isAfter(endDate)) {
                 calendersForMonth.add(new CalenderResponse(calender));
             }
         }
 
         return calendersForMonth;
     }
+
+
 
 
     // 일정 조회
