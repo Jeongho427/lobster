@@ -9,6 +9,7 @@ import vacationproject.lobster.domain.User;
 @AllArgsConstructor
 @Getter
 public class UpdateGroupRequest {
+    private Long gId;
     private String groupName;
     private int memberCnt;
     private User creator;

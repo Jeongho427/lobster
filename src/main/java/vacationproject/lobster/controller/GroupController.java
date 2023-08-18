@@ -10,8 +10,7 @@ import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.group.AddGroupRequest;
-import vacationproject.lobster.dto.group.CombinedCalendarResponse;
-import vacationproject.lobster.dto.group.GroupResponse;
+import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
 import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.GroupService;
@@ -35,9 +34,8 @@ public class GroupController {
     private final JwtProvider jwtProvider;
 
     //Group 생성
-    @PostMapping("/api/groups/{userId}")
-    public ResponseEntity<Group> createGroup(@PathVariable long userId,
-                                             @RequestHeader HttpHeaders headers,
+    @PostMapping("/api/groups")
+    public ResponseEntity<Group> createGroup(@RequestHeader HttpHeaders headers,
                                              @RequestBody AddGroupRequest request) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
@@ -49,30 +47,47 @@ public class GroupController {
 
     //Group 목록 조회
     @GetMapping("/api/groups")
-    public ResponseEntity<List<GroupResponse>> findAllGroups() {
-        List<GroupResponse> groups = groupService.findAll()
-                .stream()
-                .map(GroupResponse::new)
-                .toList();
+    public ResponseEntity<List<Group>> findAllGroups(@RequestHeader HttpHeaders headers) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+
+        List<Group> groups = groupService.getGroupsByUserId(uId);
 
         return ResponseEntity.ok()
                 .body(groups);
     }
 
-    //Group id로 단건 조회
+    /*//Group id로 단건 조회
     @GetMapping("/api/groups/{groupId}")
-    public ResponseEntity<GroupResponse> findGroupById(@RequestHeader HttpHeaders auth,
+    public ResponseEntity<GroupResponse> findGroupById(@RequestHeader HttpHeaders headers,
                                                        @PathVariable long groupId) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
         Group group = groupService.findById(groupId);
 
         return ResponseEntity.ok()
                 .body(new GroupResponse(group));
+    }*/
+
+    //그룹원 일정 다 모인 캘린더 보기
+    @GetMapping("/api/groups/{groupId}")
+    public ResponseEntity<CombinedCalenderResponse> getCombinedCalendarForGroup(@RequestHeader HttpHeaders headers,
+                                                                                @PathVariable long groupId,
+                                                                                @RequestParam int year,
+                                                                                @RequestParam int month) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+        CombinedCalenderResponse combinedCalender = groupService.getCombinedCalenderForGroup(groupId, year, month);
+
+        return ResponseEntity.ok(combinedCalender);
     }
 
     //Group 삭제
     @DeleteMapping("/api/groups/{groupId}")
-    public ResponseEntity<Void> deleteGroup(@RequestHeader HttpHeaders auth,
+    public ResponseEntity<Void> deleteGroup(@RequestHeader HttpHeaders headers,
                                             @PathVariable long groupId) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
         groupService.delete(groupId);
 
         return ResponseEntity.ok()
@@ -81,25 +96,18 @@ public class GroupController {
 
     //Group 탈퇴
     @DeleteMapping("/api/groups/{groupId}/leave")
-    public ResponseEntity<Void> leaveGroup(@RequestHeader HttpHeaders auth,
-                                           @PathVariable long groupId,
-                                           @RequestParam long userId) {
-        groupService.leaveGroup(groupId, userId);
+    public ResponseEntity<Void> leaveGroup(@RequestHeader HttpHeaders headers,
+                                           @PathVariable long groupId) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+
+        groupService.leaveGroup(groupId, uId);
         return ResponseEntity.ok().build();
     }
 
-    //그룹원 일정 다 모인 캘린더 보기
-    @GetMapping("/api/groups/{userId}/combined-calendar")
-    public ResponseEntity<CombinedCalendarResponse> getCombinedCalendarForGroup(@RequestHeader HttpHeaders auth,
-                                                                                @PathVariable long userId) {
-        CombinedCalendarResponse combinedCalendar = groupService.getCombinedCalendarForGroup(userId);
-
-        return ResponseEntity.ok(combinedCalendar);
-    }
-
     // 그룹 초대 기능
-    @PostMapping("/api/invite/{groupId}") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.
-    public String inviteUser(@RequestHeader HttpHeaders auth,
+    @PostMapping("/api/groups/{groupId}/invite") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.
+    public String inviteUser(@RequestHeader HttpHeaders headers,
                              @PathVariable long groupId,
                              @RequestBody Map<String, String> request) {
         String userId = request.get("userId");
@@ -157,11 +165,13 @@ public class GroupController {
     }
 
     // 그룹 수정
-    @PutMapping("/api/groups/{id}")
-    public ResponseEntity<Group> updateArticle(@RequestHeader HttpHeaders auth,
-                                               @PathVariable long id,
-                                               @RequestBody UpdateGroupRequest request) {
-        Group updatedGroup = groupService.update(id, request);
+    @PutMapping("/api/groups/{groupId}")
+    public ResponseEntity<Group> updateGroup(@RequestHeader HttpHeaders headers,
+                                             @PathVariable long groupId,
+                                             @RequestBody UpdateGroupRequest request) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+        Group updatedGroup = groupService.update(groupId, request);
 
         return ResponseEntity.ok()
                 .body(updatedGroup);

@@ -52,8 +52,8 @@ public class User {
     @JsonManagedReference
     private List<Group> groups = new ArrayList<>();
 
-    @OneToOne(mappedBy = "userId")
-    private Member member;
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    private List<Member> members = new ArrayList<>();
 
     @Builder
     public User(String userId, String password, String userName, String email, String phoneNum) {

@@ -35,7 +35,7 @@ public class Group {
     private User creator;
 
     // 멤버 테이블의 모든 정보 불러오기
-    @OneToMany(mappedBy = "groupId")
+    @OneToMany(mappedBy = "groupId", cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
 
     public void update(String groupName) {

@@ -3,12 +3,12 @@ package vacationproject.lobster.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
+import vacationproject.lobster.dto.calender.CalenderResponse;
 import vacationproject.lobster.dto.group.AddGroupRequest;
-import vacationproject.lobster.dto.group.CombinedCalendarResponse;
+import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
@@ -24,22 +24,26 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
-
+    private final CalenderService calenderService;
 
     // Group 등록
     public Group save(AddGroupRequest groupRequest, Long uId) {
         User creator = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
-        // memberCnt를 1로 설정
         groupRequest.setMemberCnt(1);
 
-        if (creator != null) {
-            // 조회된 User 엔티티를 Group 엔티티에 설정하여 저장
-            return groupRepository.save(groupRequest.toEntity(creator));
-        } else {
-            // creator가 null인 경우에 대한 처리를 합니다. (필요하면 추가)
-            // creator가 null일 수 없다고 가정
-            throw new IllegalArgumentException("Creator not found.");
-        }
+        // Group 엔티티 생성
+        Group newGroup = groupRequest.toEntity(creator);
+        Group savedGroup = groupRepository.save(newGroup);
+
+        // 생성자 정보를 Member 테이블에 추가
+        Member creatorMember = Member.builder()
+                .groupId(savedGroup)
+                .userId(creator)
+                .color("some_color")
+                .build();
+        memberRepository.save(creatorMember);
+
+        return savedGroup;
     }
 
     //Group 전체 조회
@@ -87,24 +91,41 @@ public class GroupService {
         }
     }
 
-    //그룹원들 달력 한 달력에 모아주기
-    public CombinedCalendarResponse getCombinedCalendarForGroup(long groupId) {
+    //uId로 그룹 찾기
+    public List<Group> getGroupsByUserId(Long uId) {
+        User user = userRepository.findById(uId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + uId));
+
+        List<Group> groups = new ArrayList<>();
+
+        // 해당 유저가 속한 멤버 목록을 찾아서 그룹 ID를 가져옵니다.
+        List<Member> userMemberships = memberRepository.findByUserId(user);
+        for (Member member : userMemberships) {
+            groups.add(member.getGroupId());
+        }
+
+        return groups;
+    }
+
+    // 그룹원들 달력 한 달력에 모아주기
+    public CombinedCalenderResponse getCombinedCalenderForGroup(Long groupId, int year, int month) {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + groupId));
 
-        // 그룹원들의 캘린더 일정 리스트를 가져옴
-        List<Calender> combinedCalenders = new ArrayList<>();
+        List<CalenderResponse> combinedCalenders = new ArrayList<>();
         for (Member member : group.getMembers()) {
-            combinedCalenders.addAll(member.getUserId().getCalenders());
+            List<CalenderResponse> userCalendersForMonth = calenderService.getCalendersForMonth(member.getUserId().getUId(), year, month);
+            combinedCalenders.addAll(userCalendersForMonth);
         }
 
-        return new CombinedCalendarResponse(combinedCalenders);
+        return new CombinedCalenderResponse(combinedCalenders);
     }
 
+
     //Group 수정 (이름만 수정 가능) 멤버 수는 자동으로 갱신되게, 그룹 생성자는 안바뀌게
-    public Group update(Long id, UpdateGroupRequest request) {
-        Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+    public Group update(Long gId, UpdateGroupRequest request) {
+        Group group = groupRepository.findById(gId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + gId));
 
         return group;
     }

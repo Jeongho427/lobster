@@ -45,6 +45,7 @@ public class CalenderService {
         return calenderRepository.findByCalenderOwnerId(uId);
     }
 
+
     // 특정 달 및 앞뒤 3달치 일정 가져오기
     public List<CalenderResponse> getCalendersForMonth(Long uId, int year, int month) {
         List<Calender> calenders = calenderRepository.findByCalenderOwnerId(uId);
@@ -54,22 +55,24 @@ public class CalenderService {
         LocalDate startDate = targetMonth.atDay(1).minusMonths(1); // 앞 달의 시작일
         LocalDate endDate = targetMonth.atEndOfMonth().plusMonths(1); // 뒷 달의 마지막일
 
-        List<CalenderResponse> calendersForMonth = new ArrayList<>();
+        return filterCalendersByDateRange(calenders, startDate, endDate);
+    }
+
+    // 특정 기간에 해당하는 일정만 필터링하는 메서드
+    private List<CalenderResponse> filterCalendersByDateRange(List<Calender> calenders, LocalDate startDate, LocalDate endDate) {
+        List<CalenderResponse> calendersInRange = new ArrayList<>();
         for (Calender calender : calenders) {
             LocalDateTime calenderStartDateTime = calender.getDay_start().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             LocalDateTime calenderEndDateTime = calender.getDay_end().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
             if (!calenderStartDateTime.toLocalDate().isBefore(startDate) && !calenderStartDateTime.toLocalDate().isAfter(endDate)) {
-                calendersForMonth.add(new CalenderResponse(calender));
+                calendersInRange.add(new CalenderResponse(calender));
             } else if (!calenderEndDateTime.toLocalDate().isBefore(startDate) && !calenderEndDateTime.toLocalDate().isAfter(endDate)) {
-                calendersForMonth.add(new CalenderResponse(calender));
+                calendersInRange.add(new CalenderResponse(calender));
             }
         }
-
-        return calendersForMonth;
+        return calendersInRange;
     }
-
-
 
 
     // 일정 조회

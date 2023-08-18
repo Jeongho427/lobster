@@ -21,12 +21,12 @@ public class Member {
     private Long mId;
 
     // 그룹 테이블의 group_id와 연결되어있음
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id")
     private Group groupId;
 
     // 유저 테이블의 user_id와 연결되어있음
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User userId;
 

@@ -32,7 +32,7 @@ public class Calender {
     @Column(name = "important")
     private boolean important;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User calenderOwner;
