@@ -9,10 +9,12 @@ import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.calender.*;
+import vacationproject.lobster.dto.group.GroupResponse;
 import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.CalenderService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -58,27 +60,39 @@ public class CalenderController {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
 
-        User user = userRepository.findById(uId).orElseThrow(()-> new IllegalArgumentException("user not found")); // 이에 대한 UserService를 생성해야 합니다.
+        User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("user not found"));
 
         List<CalenderResponse> calendersForMonth = calenderService.getCalendersForMonth(uId, year, month);
 
+        List<GroupResponse> groupResponses = user.getGroups().stream()
+                .map(group -> {
+                    GroupResponse groupResponse = new GroupResponse();
+                    groupResponse.setGId(group.getGId()); // 그룹 아이디 추가
+                    groupResponse.setGroupName(group.getGroupName());
+                    groupResponse.setMemberCnt(group.getMemberCnt());
+                    return groupResponse;
+                })
+                .collect(Collectors.toList());
+
         ExtendedCalenderResponse extendedResponse = new ExtendedCalenderResponse();
         extendedResponse.setUserName(user.getUserName());
-        extendedResponse.setGroups(user.getGroups());
+        extendedResponse.setGroups(groupResponses);
         extendedResponse.setCalenders(calendersForMonth);
 
         return ResponseEntity.ok()
                 .body(extendedResponse);
     }
 
+
+
     // 일정 삭제
     @DeleteMapping("/api/calenders")
     public ResponseEntity<Void> deleteEvent(@RequestHeader HttpHeaders headers,
-                                            @RequestBody UpdateCalenderRequest calenderRequest) {
+                                            @RequestParam Long cId) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
 
-        calenderService.delete(calenderRequest.getCId());
+        calenderService.delete(cId);
 
         return ResponseEntity.ok()
                 .build();

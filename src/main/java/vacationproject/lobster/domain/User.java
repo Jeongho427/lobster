@@ -45,15 +45,21 @@ public class User {
     private byte[] profileImg;
 
     @OneToMany(mappedBy = "calenderOwner", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<Calender> calenders = new ArrayList<>();
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<Group> groups = new ArrayList<>();
 
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
+
+    //@JsonManagedReference
+    @OneToMany(mappedBy = "inviteUserId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Invite> invites = new ArrayList<>();
+
+
 
     @Builder
     public User(String userId, String password, String userName, String email, String phoneNum) {

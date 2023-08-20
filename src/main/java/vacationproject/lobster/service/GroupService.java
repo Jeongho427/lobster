@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class GroupService {
 
@@ -29,18 +30,17 @@ public class GroupService {
     // Group 등록
     public Group save(AddGroupRequest groupRequest, Long uId) {
         User creator = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
-        groupRequest.setMemberCnt(1);
 
         // Group 엔티티 생성
-        Group newGroup = groupRequest.toEntity(creator);
-        Group savedGroup = groupRepository.save(newGroup);
+        Group group = groupRequest.toEntity(creator);
+        Group savedGroup = groupRepository.save(group);
 
-        // 생성자 정보를 Member 테이블에 추가
         Member creatorMember = Member.builder()
                 .groupId(savedGroup)
                 .userId(creator)
-                .color("some_color")
+                .color("default") // 생성자의 기본 색상 설정
                 .build();
+
         memberRepository.save(creatorMember);
 
         return savedGroup;
@@ -57,26 +57,38 @@ public class GroupService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    //Group 삭제
-    public void delete(Long id) {
-        groupRepository.deleteById(id);
+    // Group 삭제
+    public void delete(Long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
+
+        // Group에 속한 모든 멤버 삭제
+        for (Member member : group.getMembers()) {
+            memberRepository.delete(member);
+        }
+
+        // Group 삭제
+        groupRepository.delete(group);
     }
 
-    //Group 탈퇴
+
+    // Group 탈퇴
     public void leaveGroup(Long groupId, Long userId) {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid group ID."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         // 해당 그룹에 속한 모든 멤버 조회
         List<Member> members = group.getMembers();
 
         // 그룹 생성자인 경우 그룹 삭제 및 멤버들 삭제
-        if (group.getCreator().getUserId().equals(userId)) {
+        if (group.getCreator().equals(user)) {
             for (Member member : members) {
                 memberRepository.deleteById(member.getMId());
-                groupRepository.decrementMemberCount(groupId);
             }
-            groupRepository.deleteById(groupId);
+            delete(groupId);
         }
         else {
             // 그룹에서 해당 사용자 삭제
@@ -90,6 +102,39 @@ public class GroupService {
             }
         }
     }
+
+
+    /*// Group 탈퇴
+    public void leaveGroup(Long groupId, Long userId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        // 그룹 생성자인 경우
+        if (group.getCreator().equals(user)) {
+            // 그룹 멤버 정보 및 그룹 자체 삭제
+            groupRepository.delete(group);
+        } else {
+            // 그룹 멤버인 경우
+            Member memberToDelete = null;
+            for (Member member : group.getMembers()) {
+                if (member.getUserId().equals(user)) {
+                    memberToDelete = member;
+                    break;
+                }
+            }
+
+            if (memberToDelete != null) {
+                group.getMembers().remove(memberToDelete);
+                memberRepository.delete(memberToDelete);
+            } else {
+                throw new IllegalArgumentException("User is not a member of the group.");
+            }
+        }
+    }*/
+
 
     //uId로 그룹 찾기
     public List<Group> getGroupsByUserId(Long uId) {

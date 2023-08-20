@@ -8,18 +8,12 @@ import org.springframework.web.bind.annotation.*;
 
 import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Group;
-import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.group.AddGroupRequest;
 import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
-import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.GroupService;
-import vacationproject.lobster.service.InvitationService;
-import vacationproject.lobster.service.MailSenderService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -28,9 +22,6 @@ import java.util.Map;
 public class GroupController {
 
     private final GroupService groupService;
-    private final UserRepository userRepository;
-    private final InvitationService invitationService;
-    private final MailSenderService mailSenderService;
     private final JwtProvider jwtProvider;
 
     //Group 생성
@@ -39,6 +30,7 @@ public class GroupController {
                                              @RequestBody AddGroupRequest request) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
+
         Group savedGroup = groupService.save(request, uId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -103,65 +95,6 @@ public class GroupController {
 
         groupService.leaveGroup(groupId, uId);
         return ResponseEntity.ok().build();
-    }
-
-    // 그룹 초대 기능
-    @PostMapping("/api/groups/{groupId}/invite") // 그룹의 아이디와 사용자 로그인 아이디를 받아옴.
-    public String inviteUser(@RequestHeader HttpHeaders headers,
-                             @PathVariable long groupId,
-                             @RequestBody Map<String, String> request) {
-        String userId = request.get("userId");
-
-        User user = userRepository.findByUserId(userId);
-
-        if (user != null && user.getEmail() != null) {
-            String invitationToken = invitationService.generateInvitationToken(groupId, userId);
-            // 이것이 링크
-            String invitationLink = "http://localhost:8080/api/" + groupId + "/invite" + invitationToken + "_" + userId;
-            // mail 보내기 코드
-            mailSenderService.invite(user.getEmail(), invitationLink);
-
-            return invitationToken;
-        } else {
-            return "User not found or already exits.";
-        }
-    }
-
-    // 그룹에 링크를 누르면 멤버를 추가하는 기능
-    @GetMapping("/api/inviteToken")
-    public Map<String, String> joinGroup(
-            @RequestParam("groupId") long groupId,
-            @RequestParam("token") String token,
-            @RequestParam("userId") String loginId
-    ) { String userIdAndGroupId = invitationService.getUserIdAndGroupIdFromToken(token);
-
-        if (userIdAndGroupId != null) {
-            String[] userIdAndGroupIdArray = userIdAndGroupId.split("_");
-            String userId = userIdAndGroupIdArray[0]; // 토큰에서 해체한 유저 아이디
-            long invitedGroupId = Long.parseLong(userIdAndGroupIdArray[1]); // 토큰해서 해제한 그룹 아이디.
-
-            // 초대 링크의 그룹 ID와 요청한 그룹 ID가 일치하는지 확인
-            if (groupId == invitedGroupId) {
-
-                // 현재 로그인한 사용자의 아이디와 초대된 유저의 아이디를 비교
-                if (userId.equals( loginId)) {
-                    // 일치하면 그룹에 멤버를 추가
-                    groupService.addMemberToGroup(groupId, userId);
-
-                    Map<String, String> response = new HashMap<>();
-                    response.put("message", "Successfully joined the group.");
-                    return response;
-                } else {
-                    Map<String, String> response = new HashMap<>();
-                    response.put("error", "You are not authorized to join this group.");
-                    return response;
-                }
-            }
-        }
-
-        Map<String, String> response = new HashMap<>();
-        response.put("error", "Invalid or expired invitation link.");
-        return response;
     }
 
     // 그룹 수정

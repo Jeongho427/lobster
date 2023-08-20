@@ -3,7 +3,6 @@ package vacationproject.lobster.dto.group;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import vacationproject.lobster.domain.Calender;
 import vacationproject.lobster.dto.calender.CalenderResponse;
 
 import java.util.List;

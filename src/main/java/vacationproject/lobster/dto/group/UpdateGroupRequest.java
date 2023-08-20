@@ -13,5 +13,4 @@ public class UpdateGroupRequest {
     private String groupName;
     private int memberCnt;
     private User creator;
-
 }

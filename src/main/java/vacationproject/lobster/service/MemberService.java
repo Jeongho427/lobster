@@ -38,29 +38,6 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    /*public void delete(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
-
-        Group group = member.getGroupId();
-        List<Member> members = group.getMembers();
-
-        // 멤버가 생성자인지 확인
-        if (group.getCreator().equals(member.getUserId())) {
-            // 그룹에 속한 모든 멤버들을 삭제
-            for (Member deleteMember : members) {
-                memberRepository.delete(deleteMember);
-            }
-            // 그룹을 삭제
-            groupRepository.deleteById(group.getGId());
-        } else {
-            // 그룹에 속한 현재 멤버를 삭제
-            memberRepository.delete(member);
-        }
-
-        memberRepository.deleteById(id);
-    }*/
-
     //Member 수정
     public Member update(Long id, UpdateMemberRequest request) {
         Member member = memberRepository.findById(id)
