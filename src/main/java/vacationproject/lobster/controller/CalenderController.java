@@ -11,6 +11,7 @@ import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.calender.*;
 import vacationproject.lobster.dto.group.GroupResponse;
+import vacationproject.lobster.dto.user.UserInfoResponse;
 import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.CalenderService;
 import vacationproject.lobster.service.GroupService;
@@ -55,9 +56,36 @@ public class CalenderController {
                 .body(userCalenders);
     }*/
 
-    // 내 달력 페이지 사실상 메인 페이지(특정 달 및 앞뒤 3달치 일정 가져오기, 사용자 이름, 일정들, 그룹목록 가져오기)
+    //User 이름, 속한 그룹 목록 반환
+    @GetMapping("/api/calenders/user-info")
+    public ResponseEntity<UserInfoResponse> getUserInfo(@RequestHeader HttpHeaders headers) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+
+        User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("user not found"));
+
+        List<Group> userGroups = groupService.getGroupsByUserId(uId);
+
+        List<GroupResponse> groupResponses = userGroups.stream()
+                .map(group -> {
+                    GroupResponse groupResponse = new GroupResponse();
+                    groupResponse.setGId(group.getGId()); // 그룹 아이디 추가
+                    groupResponse.setGroupName(group.getGroupName());
+                    groupResponse.setMemberCnt(group.getMemberCnt());
+                    return groupResponse;
+                })
+                .collect(Collectors.toList());
+        UserInfoResponse userInfoResponse = new UserInfoResponse();
+        userInfoResponse.setUserName(user.getUserName());
+        userInfoResponse.setGroups(groupResponses);
+
+        return ResponseEntity.ok()
+                .body(userInfoResponse);
+    }
+
+    // 내 달력 페이지 사실상 메인 페이지(특정 달 및 앞뒤 3달치 일정 가져오기)
     @GetMapping("/api/calenders")
-    public ResponseEntity<ExtendedCalenderResponse> getCalendersForMonth(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<List<CalenderResponse>> getCalendersForMonth(@RequestHeader HttpHeaders headers,
                                                                          @RequestParam int year,
                                                                          @RequestParam int month) {
         String token = headers.getFirst("Authorization");
@@ -67,7 +95,7 @@ public class CalenderController {
 
         List<CalenderResponse> calendersForMonth = calenderService.getCalendersForMonth(uId, year, month);
 
-        // 해당 사용자의 그룹 가져오기
+        /*// 해당 사용자의 그룹 가져오기
         List<Group> userGroups = groupService.getGroupsByUserId(uId);
 
         List<GroupResponse> groupResponses = userGroups.stream()
@@ -83,13 +111,11 @@ public class CalenderController {
         ExtendedCalenderResponse extendedResponse = new ExtendedCalenderResponse();
         extendedResponse.setUserName(user.getUserName());
         extendedResponse.setGroups(groupResponses);
-        extendedResponse.setCalenders(calendersForMonth);
+        extendedResponse.setCalenders(calendersForMonth);*/
 
         return ResponseEntity.ok()
-                .body(extendedResponse);
+                .body(calendersForMonth);
     }
-
-
 
     // 일정 삭제
     @DeleteMapping("/api/calenders")
