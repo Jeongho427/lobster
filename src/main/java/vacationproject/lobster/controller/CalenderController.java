@@ -93,7 +93,7 @@ public class CalenderController {
 
         User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("user not found"));
 
-        List<CalenderResponse> calendersForMonth = calenderService.getCalendersForMonth(uId, year, month);
+        List<CalenderResponse> calenders = calenderService.getCalendersForMonth(uId, year, month);
 
         /*// 해당 사용자의 그룹 가져오기
         List<Group> userGroups = groupService.getGroupsByUserId(uId);
@@ -114,7 +114,7 @@ public class CalenderController {
         extendedResponse.setCalenders(calendersForMonth);*/
 
         return ResponseEntity.ok()
-                .body(calendersForMonth);
+                .body(calenders);
     }
 
     // 일정 삭제
