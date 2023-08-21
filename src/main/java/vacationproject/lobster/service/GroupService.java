@@ -142,6 +142,7 @@ public class GroupService {
         Group group = groupRepository.findById(gId)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + gId));
 
+        group.updateMemberCount(memberRepository);
         return group;
     }
 
