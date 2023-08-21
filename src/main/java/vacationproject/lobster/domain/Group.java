@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import vacationproject.lobster.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,11 @@ public class Group {
 
     public void update(String groupName) {
         this.groupName = groupName;
+    }
+
+    public void updateMemberCount(MemberRepository memberRepository) {
+        Long memberCount = memberRepository.countByGroupId_gId(this.gId);
+        this.memberCnt = memberCount.intValue();
     }
 
     @Builder

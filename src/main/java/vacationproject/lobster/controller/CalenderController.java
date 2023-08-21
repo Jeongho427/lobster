@@ -91,7 +91,7 @@ public class CalenderController {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
 
-        User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("user not found"));
+        //User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("user not found"));
 
         List<CalenderResponse> calenders = calenderService.getCalendersForMonth(uId, year, month);
 

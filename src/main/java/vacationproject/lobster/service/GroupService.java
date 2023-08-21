@@ -43,6 +43,8 @@ public class GroupService {
 
         memberRepository.save(creatorMember);
 
+        group.updateMemberCount(memberRepository);
+
         return savedGroup;
     }
 
@@ -101,6 +103,7 @@ public class GroupService {
                 }
             }
         }
+        group.updateMemberCount(memberRepository);
     }
 
     //uId로 그룹 찾기
@@ -168,6 +171,6 @@ public class GroupService {
 
         memberRepository.save(member);
 
-
+        group.updateMemberCount(memberRepository);
     }
 }

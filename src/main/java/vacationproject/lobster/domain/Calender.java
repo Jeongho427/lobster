@@ -37,10 +37,11 @@ public class Calender {
     @JsonBackReference
     private User calenderOwner;
 
-    public void update(Date day_start, Date day_end, String contents) {
+    public void update(Date day_start, Date day_end, String contents, boolean important) {
         this.day_start = day_start;
         this.day_end = day_end;
         this.contents = contents;
+        this.important = important;
     }
 
     @Builder

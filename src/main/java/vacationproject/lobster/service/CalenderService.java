@@ -92,7 +92,8 @@ public class CalenderService {
                 .orElseThrow(() -> new IllegalArgumentException("일정을 찾을 수 없습니다"));
 
         // 기존 일정의 정보를 가져와서 업데이트합니다.
-        existingCalender.update(calenderRequest.getDay_start(), calenderRequest.getDay_end(), calenderRequest.getContents());
+        existingCalender.update(calenderRequest.getDay_start(), calenderRequest.getDay_end(), calenderRequest.getContents(), calenderRequest.isImportant());
+
         return calenderRepository.save(existingCalender);
     }
 }

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vacationproject.lobster.domain.User;
 
 import java.util.Date;
 
@@ -17,5 +16,4 @@ public class UpdateCalenderRequest {
     private Date day_end;
     private String contents;
     private boolean important;
-    private User calenderOwner;
 }
