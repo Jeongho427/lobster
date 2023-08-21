@@ -14,6 +14,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByUserId(User user);
 
+    List<Member> findByGroupId(Group group);
+
     // groupId와 일치하는 멤버의 수를 조회하는 쿼리
     Long countByGroupId_gId(Long groupId);
 }

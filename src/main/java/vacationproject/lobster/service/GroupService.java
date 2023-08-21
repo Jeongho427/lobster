@@ -10,12 +10,14 @@ import vacationproject.lobster.dto.calender.CalenderResponse;
 import vacationproject.lobster.dto.group.AddGroupRequest;
 import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
+import vacationproject.lobster.dto.user.GroupUsersResponse;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 import vacationproject.lobster.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -120,6 +122,21 @@ public class GroupService {
         }
 
         return groups;
+    }
+
+    //그룹에 속하는 그룹원들 반환
+    public GroupUsersResponse getGroupUsers(Long groupId) {
+
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(()-> new IllegalArgumentException("not found: " + groupId));
+
+        List<Member> members = memberRepository.findByGroupId(group);
+        List<User> groupUsers = members.stream()
+                .map(Member::getUserId) // 각 멤버에서 userId 추출
+                .collect(Collectors.toList());
+
+        GroupUsersResponse groupUsersResponse = new GroupUsersResponse(groupUsers);
+        return groupUsersResponse;
     }
 
     // 그룹원들 달력 한 달력에 모아주기

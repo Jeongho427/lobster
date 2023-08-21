@@ -11,6 +11,7 @@ import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.dto.group.AddGroupRequest;
 import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
+import vacationproject.lobster.dto.user.GroupUsersResponse;
 import vacationproject.lobster.service.GroupService;
 
 import java.util.List;
@@ -60,6 +61,17 @@ public class GroupController {
         return ResponseEntity.ok()
                 .body(new GroupResponse(group));
     }*/
+
+    //해당 그룹 그룹원들 반환
+    @GetMapping("/api/groups/{groupId}/users")
+    public ResponseEntity<GroupUsersResponse> getGroupUsers(@RequestHeader HttpHeaders headers,
+                                                            @PathVariable Long groupId) {
+        String token = headers.getFirst("Authorization");
+        Long uId = jwtProvider.extractUIdFromToken(token);
+
+        GroupUsersResponse groupUsersResponse = groupService.getGroupUsers(groupId);
+        return ResponseEntity.ok(groupUsersResponse);
+    }
 
     //그룹원 일정 다 모인 캘린더 보기
     @GetMapping("/api/groups/{groupId}")
