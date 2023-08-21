@@ -15,7 +15,6 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final GroupRepository groupRepository;
 
     //Member 생성
     public Member save(AddMemberRequest memberRequest) {
@@ -28,20 +27,20 @@ public class MemberService {
     }
 
     //Member id로 조회
-    public Member findById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+    public Member findById(Long mId) {
+        return memberRepository.findById(mId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + mId));
     }
 
     //Member 삭제
-    public void delete(Long id){
-        memberRepository.deleteById(id);
+    public void delete(Long memberId){
+        memberRepository.deleteById(memberId);
     }
 
     //Member 수정
-    public Member update(Long id, UpdateMemberRequest request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+    public Member update(Long mId, UpdateMemberRequest request) {
+        Member member = memberRepository.findById(mId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + mId));
 
         member.update(request.getGroupId(), request.getUserId(), request.getColor());
 

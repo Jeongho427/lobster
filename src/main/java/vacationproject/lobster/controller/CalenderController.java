@@ -7,11 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Calender;
+import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.calender.*;
 import vacationproject.lobster.dto.group.GroupResponse;
 import vacationproject.lobster.repository.UserRepository;
 import vacationproject.lobster.service.CalenderService;
+import vacationproject.lobster.service.GroupService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ public class CalenderController {
 
     private final UserRepository userRepository;
     private final CalenderService calenderService;
+    private final GroupService groupService;
     private final JwtProvider jwtProvider;
 
     // 일정 생성
@@ -64,7 +67,10 @@ public class CalenderController {
 
         List<CalenderResponse> calendersForMonth = calenderService.getCalendersForMonth(uId, year, month);
 
-        List<GroupResponse> groupResponses = user.getGroups().stream()
+        // 해당 사용자의 그룹 가져오기
+        List<Group> userGroups = groupService.getGroupsByUserId(uId);
+
+        List<GroupResponse> groupResponses = userGroups.stream()
                 .map(group -> {
                     GroupResponse groupResponse = new GroupResponse();
                     groupResponse.setGId(group.getGId()); // 그룹 아이디 추가

@@ -103,39 +103,6 @@ public class GroupService {
         }
     }
 
-
-    /*// Group 탈퇴
-    public void leaveGroup(Long groupId, Long userId) {
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-
-        // 그룹 생성자인 경우
-        if (group.getCreator().equals(user)) {
-            // 그룹 멤버 정보 및 그룹 자체 삭제
-            groupRepository.delete(group);
-        } else {
-            // 그룹 멤버인 경우
-            Member memberToDelete = null;
-            for (Member member : group.getMembers()) {
-                if (member.getUserId().equals(user)) {
-                    memberToDelete = member;
-                    break;
-                }
-            }
-
-            if (memberToDelete != null) {
-                group.getMembers().remove(memberToDelete);
-                memberRepository.delete(memberToDelete);
-            } else {
-                throw new IllegalArgumentException("User is not a member of the group.");
-            }
-        }
-    }*/
-
-
     //uId로 그룹 찾기
     public List<Group> getGroupsByUserId(Long uId) {
         User user = userRepository.findById(uId)
