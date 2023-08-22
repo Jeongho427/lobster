@@ -14,8 +14,8 @@ public class CalenderResponse {
     private Date day_end;
     private String contents;
     private boolean important;
-    @JsonBackReference
-    private User calenderOwner;
+    private Long calenderOwnerId;
+    private String calenderOwnerName;
 
     public CalenderResponse(Calender calender) {
         this.cId = calender.getCId();
@@ -23,6 +23,7 @@ public class CalenderResponse {
         this.day_end = calender.getDay_end();
         this.contents = calender.getContents();
         this.important = calender.isImportant();
-        this.calenderOwner = calender.getCalenderOwner();
+        this.calenderOwnerId = calender.getCalenderOwner().getUId();
+        this.calenderOwnerName = calender.getCalenderOwner().getUserName();
     }
 }
