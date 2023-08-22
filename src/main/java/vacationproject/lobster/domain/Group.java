@@ -37,10 +37,8 @@ public class Group {
 
     // 멤버 테이블의 모든 정보 불러오기
     @OneToMany(mappedBy = "groupId")
-    //JsonManagedReference
     private List<Member> members = new ArrayList<>();
 
-    //@JsonManagedReference
     @OneToMany(mappedBy = "inviteGroupId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invite> invites = new ArrayList<>();
 

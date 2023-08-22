@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
-import vacationproject.lobster.dto.calender.CalenderContentsResponse;
 import vacationproject.lobster.dto.calender.CalenderResponse;
 import vacationproject.lobster.dto.group.AddGroupRequest;
 import vacationproject.lobster.dto.group.CombinedCalenderResponse;
@@ -126,7 +125,7 @@ public class GroupService {
     }
 
     //그룹에 속하는 그룹원들 반환
-    public GroupUsersResponse getGroupUsers(Long groupId) {
+    public List<GroupUsersResponse> getGroupUsers(Long groupId) {
 
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(()-> new IllegalArgumentException("not found: " + groupId));
@@ -136,20 +135,10 @@ public class GroupService {
                 .map(Member::getUserId) // 각 멤버에서 userId 추출
                 .collect(Collectors.toList());
 
-        GroupUsersResponse groupUsersResponse = new GroupUsersResponse(groupUsers);
+        List<GroupUsersResponse> groupUsersResponse = groupUsers.stream()
+                .map(user -> new GroupUsersResponse(user.getUserId(), user.getUserName(), user.getProfileImg()))
+                .collect(Collectors.toList());
         return groupUsersResponse;
-    }
-
-    //그룹원 일정 정보 반환
-    public CalenderContentsResponse getCalenderContents(Long groupId) {
-
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + groupId));
-
-
-
-        CalenderContentsResponse calenderContentsResponse = new CalenderContentsResponse();
-        return calenderContentsResponse;
     }
 
     // 그룹원들 달력 한 달력에 모아주기

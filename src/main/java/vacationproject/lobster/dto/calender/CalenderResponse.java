@@ -1,9 +1,7 @@
 package vacationproject.lobster.dto.calender;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import vacationproject.lobster.domain.Calender;
-import vacationproject.lobster.domain.User;
 
 import java.util.Date;
 

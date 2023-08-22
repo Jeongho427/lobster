@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Group;
-import vacationproject.lobster.dto.calender.CalenderContentsResponse;
 import vacationproject.lobster.dto.group.AddGroupRequest;
 import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
@@ -65,24 +64,13 @@ public class GroupController {
 
     //해당 그룹 그룹원들 반환
     @GetMapping("/api/groups/{groupId}/users")
-    public ResponseEntity<GroupUsersResponse> getGroupUsers(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<List<GroupUsersResponse>> getGroupUsers(@RequestHeader HttpHeaders headers,
                                                             @PathVariable Long groupId) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
 
-        GroupUsersResponse groupUsersResponse = groupService.getGroupUsers(groupId);
+        List<GroupUsersResponse> groupUsersResponse = groupService.getGroupUsers(groupId);
         return ResponseEntity.ok(groupUsersResponse);
-    }
-
-    //그룹의 일정 정보(일정의 주인에 대한 정보: 이름, 제목, cId) <=== 이거 어케 처리할거?
-    @GetMapping("/api/groups/{groupId}/contents")
-    public ResponseEntity<CalenderContentsResponse> getGroupContents(@RequestHeader HttpHeaders headers,
-                                                                     @PathVariable Long groupId) {
-        String token = headers.getFirst("Authorization");
-        Long uId = jwtProvider.extractUIdFromToken(token);
-
-        CalenderContentsResponse calenderContentsResponse = groupService.getCalenderContents(groupId);
-        return ResponseEntity.ok(calenderContentsResponse);
     }
 
     //그룹원 일정 다 모인 캘린더 보기
