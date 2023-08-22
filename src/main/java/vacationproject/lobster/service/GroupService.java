@@ -6,11 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
+import vacationproject.lobster.dto.calender.CalenderContentsResponse;
 import vacationproject.lobster.dto.calender.CalenderResponse;
 import vacationproject.lobster.dto.group.AddGroupRequest;
 import vacationproject.lobster.dto.group.CombinedCalenderResponse;
 import vacationproject.lobster.dto.group.UpdateGroupRequest;
-import vacationproject.lobster.dto.user.GroupUsersResponse;
+import vacationproject.lobster.dto.group.GroupUsersResponse;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 import vacationproject.lobster.repository.UserRepository;
@@ -137,6 +138,18 @@ public class GroupService {
 
         GroupUsersResponse groupUsersResponse = new GroupUsersResponse(groupUsers);
         return groupUsersResponse;
+    }
+
+    //그룹원 일정 정보 반환
+    public CalenderContentsResponse getCalenderContents(Long groupId) {
+
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + groupId));
+
+
+
+        CalenderContentsResponse calenderContentsResponse = new CalenderContentsResponse();
+        return calenderContentsResponse;
     }
 
     // 그룹원들 달력 한 달력에 모아주기

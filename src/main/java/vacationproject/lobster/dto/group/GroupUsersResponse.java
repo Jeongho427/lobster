@@ -1,4 +1,4 @@
-package vacationproject.lobster.dto.user;
+package vacationproject.lobster.dto.group;
 
 import lombok.Getter;
 import lombok.Setter;
