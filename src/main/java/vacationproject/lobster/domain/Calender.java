@@ -32,7 +32,7 @@ public class Calender {
     @Column(name = "important")
     private boolean important;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User calenderOwner;

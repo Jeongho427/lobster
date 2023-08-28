@@ -7,10 +7,7 @@ import vacationproject.lobster.domain.Group;
 import vacationproject.lobster.domain.Member;
 import vacationproject.lobster.domain.User;
 import vacationproject.lobster.dto.calender.CalenderResponse;
-import vacationproject.lobster.dto.group.AddGroupRequest;
-import vacationproject.lobster.dto.group.CombinedCalenderResponse;
-import vacationproject.lobster.dto.group.UpdateGroupRequest;
-import vacationproject.lobster.dto.group.GroupUsersResponse;
+import vacationproject.lobster.dto.group.*;
 import vacationproject.lobster.repository.GroupRepository;
 import vacationproject.lobster.repository.MemberRepository;
 import vacationproject.lobster.repository.UserRepository;
@@ -29,7 +26,7 @@ public class GroupService {
     private final MemberRepository memberRepository;
     private final CalenderService calenderService;
 
-    // Group 등록
+    // Group 생성
     public Group save(AddGroupRequest groupRequest, Long uId) {
         User creator = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
@@ -157,40 +154,15 @@ public class GroupService {
 
 
     //Group 수정 (이름만 수정 가능) 멤버 수는 자동으로 갱신되게, 그룹 생성자는 안바뀌게
-    public Group update(Long gId, UpdateGroupRequest request) {
+    public UpdateGroupResponse update(Long gId, UpdateGroupRequest groupRequest) {
         Group group = groupRepository.findById(gId)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + gId));
 
-        group.updateMemberCount(memberRepository);
-        return group;
-    }
-
-    // 해당 그룹에 멤버 추가 기능
-    @Transactional
-    public void addMemberToGroup(long groupId, String userId) {
-        User user = userRepository.findByUserId(userId);
-
-        // 그룹이 데이터베이스에 있는지 확인하고 있으면 memberCnt를 1 증가시킵니다.
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
-
-        groupRepository.incrementMemberCount(groupId);
-
-        // 이미 해당 유저가 멤버인지 확인 (중복 가입 방지)
-        boolean isUserAlreadyMember = memberRepository.existsByGroupIdAndUserId(group, user);
-
-        if (isUserAlreadyMember) {
-            throw new IllegalArgumentException("User with id " + userId + " is already a member of the group.");
-        }
-
-        Member member = Member.builder()
-                .groupId(group)
-                .userId(user)
-                .color("some_color") // 멤버의 컬러 정보를 추가로 설정하려면 이 부분을 수정
-                .build();
-
-        memberRepository.save(member);
+        group.update(groupRequest.getGroupName());
+        UpdateGroupResponse updateGroupResponse = new UpdateGroupResponse(group.getGroupName());
 
         group.updateMemberCount(memberRepository);
+        return updateGroupResponse;
     }
+
 }

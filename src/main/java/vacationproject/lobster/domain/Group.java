@@ -30,7 +30,7 @@ public class Group {
     private int memberCnt;
 
     //유저 테이블의 user_id와 연결되어있는 creator
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
     @JsonBackReference
     private User creator;

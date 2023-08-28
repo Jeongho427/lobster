@@ -8,6 +8,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
-public class UpdateGroupRequest {
+public class UpdateGroupResponse {
     private String groupName;
 }

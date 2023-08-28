@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import vacationproject.lobster.Security.JwtProvider;
 import vacationproject.lobster.domain.Group;
-import vacationproject.lobster.dto.group.AddGroupRequest;
-import vacationproject.lobster.dto.group.CombinedCalenderResponse;
-import vacationproject.lobster.dto.group.UpdateGroupRequest;
-import vacationproject.lobster.dto.group.GroupUsersResponse;
+import vacationproject.lobster.dto.group.*;
 import vacationproject.lobster.service.GroupService;
 
 import java.util.List;
@@ -111,14 +108,13 @@ public class GroupController {
 
     // 그룹 수정
     @PutMapping("/api/groups/{groupId}")
-    public ResponseEntity<Group> updateGroup(@RequestHeader HttpHeaders headers,
-                                             @PathVariable long groupId,
-                                             @RequestBody UpdateGroupRequest request) {
+    public ResponseEntity<UpdateGroupResponse> updateGroup(@RequestHeader HttpHeaders headers,
+                                                                 @PathVariable long groupId,
+                                                                 @RequestBody UpdateGroupRequest request) {
         String token = headers.getFirst("Authorization");
         Long uId = jwtProvider.extractUIdFromToken(token);
-        Group updatedGroup = groupService.update(groupId, request);
+        UpdateGroupResponse updatedGroup = groupService.update(groupId, request);
 
-        return ResponseEntity.ok()
-                .body(updatedGroup);
+        return ResponseEntity.ok(updatedGroup);
     }
 }

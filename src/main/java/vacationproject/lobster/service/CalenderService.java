@@ -33,10 +33,6 @@ public class CalenderService {
     public Calender save(AddCalenderRequest calenderRequest, Long uId) {
         User user = userRepository.findById(uId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
-        /*Date startDateTime = calenderRequest.getDay_start();
-        Date endDateTime = calenderRequest.getDay_end();*/
-        //Calender newCalender = new Calender(startDateTime, endDateTime, calenderRequest.getContents(), calenderRequest.isImportant(), user);
-
         return calenderRepository.save(calenderRequest.toEntity(user));
     }
 
@@ -44,7 +40,6 @@ public class CalenderService {
     public List<Calender> findUserCalenders(Long uId) {
         return calenderRepository.findByCalenderOwnerId(uId);
     }
-
 
     // 특정 달 및 앞뒤 3달치 일정 가져오기
     public List<CalenderResponse> getCalendersForMonth(Long uId, int year, int month) {

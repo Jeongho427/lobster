@@ -1,5 +1,6 @@
 package vacationproject.lobster.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,15 +20,13 @@ public class Member {
     private Long mId;
 
     // 그룹 테이블의 group_id와 연결되어있음
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
-    //@JsonBackReference
     private Group groupId;
 
     // 유저 테이블의 user_id와 연결되어있음
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    //@JsonBackReference
     private User userId;
 
     @Column(name = "color")
